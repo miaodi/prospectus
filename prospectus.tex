@@ -246,7 +246,7 @@ where
 \end{equation}
 The variational formulation of the Lagrange multiplier problem can be derived from the saddle point problem of the potential energy functional~\eqref{eq:potential_energy_LM}
 \begin{equation}
-    \inf_{v\in{X}}\sup_{\mu\in{M}}\Pi_{LM}(v,\mu),
+    \inf_{v\in{X}}\sup_{\mu\in{\mathcal{M}}}\Pi_{LM}(v,\mu),
 \end{equation}
 as, find $(u,\lambda)\in{\mathcal{X}}\times{\mathcal{M}}$ such that
 \begin{equation}
@@ -315,7 +315,7 @@ where the penalty term is scaled by a parameter $\epsilon$. The resulted functio
     \left\{
     \begin{array}{ll}
         a(u,v)+b(v,\lambda)=l(v) \quad \forall v\in{\mathcal{X}},\\
-        b(u,\mu) - \frac{1}{2\epsilon}\sum_{\Gamma\in\mathbf{S}}\int_\Gamma\mu\lambda{}d\Gamma=0 \quad \forall \mu\in{\mathcal{M}}.\label{eq:perturbed_mixed_form}
+        b(u,\mu) - \frac{1}{\epsilon}\sum_{\Gamma\in\mathbf{S}}\int_\Gamma\mu\lambda{}d\Gamma=0 \quad \forall \mu\in{\mathcal{M}}.\label{eq:perturbed_mixed_form}
     \end{array}
     \right.
 \end{equation}
@@ -717,7 +717,8 @@ Instead of solving the null space directly, we will localize the constraint to e
         \mathbf{0} & \mathbf{B}_2^2 & \mathbf{B}_2^3 & \mathbf{0} & \mathbf{B}_2^6 & \mathbf{0}
     \end{bmatrix},
 \end{equation}
-with $\mathbf{B}_1^1$ and $\mathbf{B}_2^2$ be identity matrices. The null space of ${\mathbf{B}}_2$ can be found as
+with $\mathbf{B}_1^1$ and $\mathbf{B}_2^2$ be identity matrices. $\mathbf{B}_1$ consists of constraints relevant to cross point while $\mathbf{B}_2$ consists of constraints relevant to intersections. \par
+The null space of ${\mathbf{B}}_2$ can be found as
 \begin{equation}
     \mathbf{C}_2:=\ker({\mathbf{B}}_2)=
     \left[\begin{array}{cccc}
@@ -727,20 +728,31 @@ with $\mathbf{B}_1^1$ and $\mathbf{B}_2^2$ be identity matrices. The null space 
        & & & 
     \end{array}\right].
 \end{equation}
-Due to the inclusion $\hat{\mathbf{C}}_p:=\ker(\hat{\mathbf{B}}_p)\subset{\ker({\mathbf{B}}_2)}$, we can find $\hat{\mathbf{C}}_p$ by solving $\ker(\mathbf{B}_1\mathbf{C}_2)$. Since dual basis functions have compact support, $\mathbf{B}_1$ and $\mathbf{C}_2$ are all sparse matrices. We can split the columns of $\mathbf{C}_2$ into two matrices, as
+\begin{figure}[hbt]
+	\centering
+    \includegraphics[width=\linewidth]{mesh_spy}
+	\caption{Control points (red) involved in crosspoint constraints ($\mathbf{B}_1$).}\label{fig:cross_point_dof}
+\end{figure}
+Due to the inclusion $\hat{\mathbf{C}}_p:=\ker(\hat{\mathbf{B}}_p)\subset{\ker({\mathbf{B}}_2)}$, we can construct $\hat{\mathbf{C}}_p$ by solving $\ker(\mathbf{B}_1\mathbf{C}_2)$. Since dual basis functions have compact support, $\mathbf{B}_1$ and $\mathbf{C}_2$ are all sparse matrices (control points involved in $\mathbf{B}_1$ are demonstrated in Figure.~\ref{fig:cross_point_dof}). We can split the columns of $\mathbf{C}_2$ into two matrices, as
 \begin{align}
     \begin{split}
         \mathbf{C}_2^1&:=\{v\in\mathbf{C}_2\colon{\mathbf{B}_1v\neq{0}}\},\\
         \mathbf{C}_2^2&:=\{v\in\mathbf{C}_2\colon{\mathbf{B}_1v={0}}\}.
     \end{split}
 \end{align}
-Such a split can be defined a priori, based on the discretization of each patch. Note that $\mathbf{C}_2^2\subset\hat{\mathbf{C}}_p$, $\hat{\mathbf{C}}_p$ can be written as
+Such a split can be defined a priori, based on the discretization of each patch. A demonstration of the split is givin in Figure.~\ref{fig:overlap_nonoverlap}. Note that $\mathbf{C}_2^2\subset\hat{\mathbf{C}}_p$, $\hat{\mathbf{C}}_p$ can be written as
 \begin{equation}
     \hat{\mathbf{C}}_p=
     \begin{bmatrix}
         \mathbf{C}_2^1\ker(\bar{\mathbf{B}}_p) & \mathbf{C}_2^2
     \end{bmatrix}, \text{ with } \bar{\mathbf{B}}_p=\mathbf{B}_1\mathbf{C}_2^1.\label{eq:local_kernel}
 \end{equation}
+\begin{figure}[hbt]
+	\centering
+    \includegraphics[width=.47\linewidth]{trim_overlap}
+    \includegraphics[width=.47\linewidth]{trim_nonoverlap}
+	\caption{Control points of basis functions (blue) defined by columns of $\mathbf{C}_2$. Left: Basis classified to $\mathbf{C}_2^1$; Right: Basis classified to $\mathbf{C}_2^2$}\label{fig:overlap_nonoverlap}
+\end{figure}
 Compared with the constraint matrix $\mathbf{B}$ whose size increases as we refine the mesh, the row size of $\bar{\mathbf{B}}_p$ is fixed and its column size is fixed after certain refinement. A comparison of the size of matrix $\mathbf{B}$ and matrix $\bar{\mathbf{B}}_p$ as a function of the degrees of freedom is given in Figure.~\ref{fig:size_evolution} for the three-patch coupling in Figure.~\ref{fig:three_planar_patches} with $2^{nd}$ order B-spline basis functions. As can be seen, the size of $\mathbf{B}$ grows rapidly as the mesh being refined. The computational cost of directly solving its kernel will be very expensive. However, owing to the compact support of dual basis function, we can transfer a global, size-varying problem (fractorization on $\mathbf{B}$) to a local, size-fixed problem (factorization on $\bar{\mathbf{B}}_p$), and the problem size is very small ($12\times{24}$ for this case).\par
 
 \begin{figure}[hbt]
@@ -768,7 +780,20 @@ A graphical comparison of the sparity patterns among standard Lagrange multiplie
     \caption{Sparsity patterns of constrained stiffness matrices. Left: standard Lagrange multipliers with global factorization. Middle: \Bezier dual basis with global factorization. Right: \Bezier dual basis with localized factorization. Top: original matrix. Bottom: small absolute values ($\leq{}10^{-14}$) be pruned. All stiffness matrices are formulated for the three-patch coupling in Figure.~\ref{fig:three_planar_patches} with $3^{rd}$ order B-spline basis functions after 4 refiments. The number of non-zero entries is given by nz.}\label{fig:sparity_pattern}
 \end{figure}
 
+\section{Numerical results}
+\subsection{Biharmonic problem on a two-patch domain with homogeneous Dirichlet Boundary} \label{sec:introduction}
 
+We first solve a biharmonic problem $\Delta^2{}u=f$ on a square domain $\Omega={(0,1)\times(0,1)}$. This domain is decomposed into two patches, as shown in Figure.~\ref{fig:two_patch_biharmonic_problem}. The manufactrued solution is given as
+\begin{equation}
+    u(x,y)=\sin(\pi{x})^2\sin(\pi{y})^2,
+\end{equation}
+which satisfies the homogeneous Dirichlet boundary condition ($u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$) and is visualized in Figure.~\ref{fig:two_patch_biharmonic_problem}. The right-hand side function $f$ can be obtained by applying the biharmonic operator to $u$.
+\begin{figure}[hbt]
+	\centering
+    \includegraphics[width=.47\linewidth]{two_patches_nonconform}
+    \includegraphics[width=.47\linewidth]{two_patches_solution}
+	\caption{The computational domain $\Omega$ and the manufactured solution with the property $u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$ on $\partial{\Omega}$, which are used in Section~\ref{sec:introduction}.}\label{fig:two_patch_biharmonic_problem}
+\end{figure}
 \section{Schedule}
 \begin{table}[hbt]
     \caption{A schedule of tasks and stages of my research towards the final dissertation.}
