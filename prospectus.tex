@@ -88,6 +88,9 @@
 \newcommand{\Bezier}{{B\'{e}zier} }
 \newtheorem{lemma}{Lemma}
 
+\newtheorem{assumption}{Assumption}
+\newtheorem{theorem}{Theorem}
+
 \journal{Journal Name}
 
 \begin{document}
@@ -493,7 +496,7 @@ with
 \begin{align}
     a_b(u,v)&=\int_\Omega\Delta{u}\Delta{v}d\Omega,\\
     b_0(\mu,u)&=\int_{\Gamma_{sm}}\mu\left[u\right]_{\Gamma}d\Gamma,\\
-    b_1(\mu,u)&=\int_{\Gamma_{sm}}\mu\left[\frac{u}{\xi_s}\right]_{\Gamma}d\Gamma.
+    b_1(\mu,u)&=\int_{\Gamma_{sm}}\mu\left[\frac{\partial{u}}{\partial\xi_s}\right]_{\Gamma}d\Gamma.
 \end{align}
 The broken Sobolev space for the biharmonic problem is given as
 \begin{equation}
@@ -505,7 +508,7 @@ with
 \end{equation}
 By moving the constraints from the problem statement to the definition of the trial and test function spaces, we obtain the following variational problem: find $u\in{\mathcal{K}_b}$, such that
 \begin{equation}
-    a_b(u,v)=l(v), \quad\forall{v\in{\mathcal{K}_b}},
+    a_b(u,v)=l(v), \quad\forall{v\in{\mathcal{K}_b}},\label{eq:biharmonic_kernel}
 \end{equation}
 where
 \begin{equation}
@@ -513,6 +516,48 @@ where
 \end{equation}
 On one hand, the absence of the Lagrange multipliers $\lambda_0$ and $\lambda_1$ reduces the size of the discretized problem and recovers the symmetric positive definite structure of the stiffness matrix. As a result, efficient iterative solvers can be applied for the problem. On the other hand, in the standard formalism, $\mathcal{M}_0$ and $\mathcal{M}_1$ are discretized by the trace of one side of the intersection so that the construction of $\mathcal{K}_b^h$ requires a factorization of a global constraint matrix, which is not a trivial task. \par
 However, in the following section, we will show that, with the help of dual basis functions, the discretized function space $\mathcal{K}_b^h$ can be formulated in an elegant manner.
+
+\subsection{Finite element approximation}
+Suppose that $\mathcal{X}_b^h\subset{\mathcal{X}_b}$, $\mathcal{M}_0^h\subset{\mathcal{M}_0}$ and $\mathcal{M}_1^h\subset{\mathcal{M}_1}$ are finite-dimensional linear subspaces of the Hilbert spaces $\mathcal{X}_b$, $\mathcal{M}_0$, and $\mathcal{M}_1$; we study the finite element approximation of the abstract problem~\eqref{eq:biharmonic_mixed}.
+\begin{assumption}
+    All bilinear functionals are bounded; i.e.,  there exist positive constants $C_a$, $C_{b_0}$ and $C_{b_1}$ such that
+    \begin{align}
+        \begin{split}
+        \vert{a_b{(u,v)}}\vert&\leq{C_a\|u\|_{H^2}\|v\|_{H^2}}\\
+        \vert{b_0{(\mu_0,u)}}\vert&\leq{C_{b_0}\|\mu_0\|_{L^2}\|v\|_{H^2}}\\
+        \vert{b_1{(\mu_1,u)}}\vert&\leq{C_{b_1}\|\mu_1\|_{L^2}\|v\|_{H^2}}
+        \end{split}
+        \quad\quad
+        \begin{split}
+            \forall{u,v}&\in{\mathcal{X}_b}\\
+            \forall{\mu_0}\in\mathcal{M}_0, {u}&\in{\mathcal{X}_b}\\
+            \forall{\mu_1}\in\mathcal{M}_1, {u}&\in{\mathcal{X}_b}
+        \end{split}
+    \end{align} 
+\end{assumption}
+
+\begin{assumption}
+    In addition, we assume that the bilinear functional $a_b(\cdot,\cdot)$ is coercive on $\mathcal{K}_b$, i.e.,
+    \begin{equation}
+        \exists{c_a>0} \quad\textit{s.t.}\quad\forall{v^h}\in\mathcal{K}_b^h,\quad a_b(v^h,v^h)\geq{c_a\|{v^h}\|_{H^2}}
+    \end{equation}
+\end{assumption}
+Following standard techniques~\cite{brenner_mathematical_2007}, we now obtain a bound on the error between $u$ and $u^h$ in term of the best approximation errors, which can be considered as C\'ea's lemma for mixed problems.
+
+\begin{theorem}
+    Under the above assumptions, there exsits a unique solution $u^h\in{\mathcal{K}_b^h}$ satisfies~\eqref{eq:biharmonic_kernel}. Furthermore, 
+    \begin{equation}
+        \|u-u^h\|_{H^2}\leq{\left(1+\frac{C_a}{c_a}\right)}\inf_{v^h\in{\mathcal{K}_b^h}}\|u-u^h\|_{H^2}+\frac{C_{b_0}}{c_a}\inf_{\mu_0^h\in{\mathcal{M}_0^h}}\|\lambda_0-\mu_0^h\|_{L^2}+\frac{C_{b_1}}{c_a}\inf_{\mu_1^h\in{\mathcal{M}_1^h}}\|\lambda_1-\mu_1^h\|_{L^2}
+    \end{equation}
+\end{theorem}
+Hence, the error of finite element approximations in broken $H^2(\Omega)$ norm are bounded by the best approximation error of $v^h\in{\mathcal{K}_b^h}$ in broken $H^2(\Omega)$ norm and $\mu_0^h\in{\mathcal{M}_0^h}$, $\mu_1^h\in{\mathcal{M}_1^h}$ in $L^2(\Gamma)$ norm. In general, the approximation ability of $p^{th}$ order piecewise polynomial in $\mathcal{X}_b^h$ is given by
+\begin{equation}
+    \|u-u^h\|_{H^2}\leq{Ch^{p-1}}.
+\end{equation}
+where $C$ is a constant that is independent of the mesh size $h$. However, the optimality of $u^h\in\mathcal{K}_b^h$ requires the \textit{inf-sup} stability of bilinear functional $b_0$ and $b_1$. The analytical study of the \textit{inf-sup} stability is beyond the scope of this paper. Instead, we demonstrate the approximation ability of $\mathcal{K}_b^h$ by directly conducting $H^2$ projection in different numerical examples.\par
+
+Meanwhile, the approximation ability of the Lagrange multiplier spaces $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ also influence the optimality of the finite element approximation. Whereas $u$ is approximated in $H^2$ space, $\lambda_0$ and $\lambda_1$ are approximated in $L^2$ space. Hence, the optimality of the finite element approximation is obtained if both $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ are $p-2$ complete, i.e., functions in $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ can exactly represent polynomials up to order $p-2$.
+
 \subsection{Discretization}
 In order to approximate the solution of the variational problem, we use the NURBS basis functions $N^{(s)}_i$ $i\in{I_s}$ and $N^{(m)}_j$ $j\in{I_m}$ to discretize coupled patches $\Omega_s$ and $\Omega_m$, respectively. An appropriate offset has been made so that there is no overlapping between index sets $I_s$ and $I_m$ (given $n_s$ basis functions in $\Omega_s$, we can assume the starting index in the index set $I_m$ is $n_s+1$). The discretized geometrical mappings are represented by
 \begin{align}
