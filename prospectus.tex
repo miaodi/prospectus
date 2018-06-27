@@ -556,7 +556,7 @@ Hence, the error of finite element approximations in broken $H^2(\Omega)$ norm a
 \end{equation}
 where $C$ is a constant that is independent of the mesh size $h$. However, the optimality of $u^h\in\mathcal{K}_b^h$ requires the \textit{inf-sup} stability of bilinear functional $b_0$ and $b_1$. The analytical study of the \textit{inf-sup} stability is beyond the scope of this paper. Instead, we demonstrate the approximation ability of $\mathcal{K}_b^h$ by directly conducting $H^2$ projection in different numerical examples.\par
 
-Meanwhile, the approximation ability of the Lagrange multiplier spaces $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ also influence the optimality of the finite element approximation. Whereas $u$ is approximated in $H^2$ space, $\lambda_0$ and $\lambda_1$ are approximated in $L^2$ space. Hence, the optimality of the finite element approximation is obtained if both $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ are $p-2$ complete, i.e., functions in $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ can exactly represent polynomials up to order $p-2$.
+Meanwhile, the approximation ability of the Lagrange multiplier spaces $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ also influence the optimality of the finite element approximation. Whereas $u$ is approximated in $H^2$ space, $\lambda_0$ and $\lambda_1$ are approximated in $L^2$ space. Hence, the optimality of the finite element approximation requires that both $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ are at least $p-2$ complete, i.e., functions in $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ can exactly represent polynomials up to order $p-2$.
 
 \subsection{Discretization}
 In order to approximate the solution of the variational problem, we use the NURBS basis functions $N^{(s)}_i$ $i\in{I_s}$ and $N^{(m)}_j$ $j\in{I_m}$ to discretize coupled patches $\Omega_s$ and $\Omega_m$, respectively. An appropriate offset has been made so that there is no overlapping between index sets $I_s$ and $I_m$ (given $n_s$ basis functions in $\Omega_s$, we can assume the starting index in the index set $I_m$ is $n_s+1$). The discretized geometrical mappings are represented by
@@ -826,7 +826,40 @@ A graphical comparison of the sparity patterns among standard Lagrange multiplie
 \end{figure}
 
 \section{Numerical results}
-\subsection{Biharmonic problem on a two-patch domain with homogeneous Dirichlet Boundary} \label{sec:introduction}
+All our numerical results are obtained via an in-house C++ code.
+\subsection{A numerical study of the completeness of B\'ezier dual basis}
+We consider the completeness of B\'ezier dual basis on the one dimensional domain, $\Omega=(0,1)$. The domain $\Omega$ is uniformly partitioned into two elements, since the B\'ezier dual basis is equivalent to the global dual basis on one element domain. In the numerical test, we find the $L^2$ approximation of $n^{th}$ order Legendre polynomial in the B\'ezier dual space, as Legendre polynomials are orthogonal to each other.\par
+
+The test results are disappointed, the B\'ezier dual basis of arbitrary order is only complete for zeroth order polynomial i.e., only the error of the $L^2$ projection of constant function is below the round-off error. The projection results of Legendre polynomials up to $3^{rd}$ order onto $3^{rd}$ order B\'ezier dual basis are demonstrated in Fig.~\ref{fig:polynomial_completeness}. As can be seen, there are huge discrepancies between the approximations and original functions for all Legendre polynomials except constant. In other words, the $L^2$ approximation of B\'ezier dual basis is only of first-order, which might deteriorate the optimality of the finite element approximation. \par
+
+In the finite element context, the construction of dual basis that can reproduce polynomial of degree $p-1$ is thoroughly studied in~\cite{oswald2001polynomial}. However, the construction procedure is complicated and gets even worse for higher inter-element continuity. In~\cite{brivadis_isogeometric_2015}, a $p-1$ complete dual basis function for quadratic B-spline basis function is constructed. But its support is much larger than its B-spline counterpart. 
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Q3_p=0} 
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}  
+        \centering 
+        \includegraphics[width=\textwidth]{Q3_p=1}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[b]{0.475\textwidth}   
+        \centering 
+        \includegraphics[width=\textwidth]{Q3_p=2}
+    \end{subfigure}
+    \quad
+    \begin{subfigure}[b]{0.475\textwidth}   
+        \centering 
+        \includegraphics[width=\textwidth]{Q3_p=3}
+    \end{subfigure}
+    \caption{The Legendre polynomials and their approximations in $3^{rd}$ order B\'ezier dual space composed of two elements. B\'ezier dual basis cannot duplicate all except constant function.} 
+    \label{fig:polynomial_completeness}
+\end{figure}
+
+\subsection{Biharmonic problem on a two-patch domain with homogeneous Dirichlet Boundary} \label{sec:two_patch}
 
 We first solve a biharmonic problem $\Delta^2{}u=f$ on a square domain $\Omega={(0,1)\times(0,1)}$. This domain is decomposed into two patches, as shown in Figure.~\ref{fig:two_patch_biharmonic_problem}. The manufactrued solution is given as
 \begin{equation}
@@ -837,7 +870,7 @@ which satisfies the homogeneous Dirichlet boundary condition ($u=\frac{\partial{
 	\centering
     \includegraphics[width=.47\linewidth]{two_patches_nonconform}
     \includegraphics[width=.47\linewidth]{two_patches_solution}
-	\caption{The computational domain $\Omega$ and the manufactured solution with the property $u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$ on $\partial{\Omega}$, which are used in Section~\ref{sec:introduction}.}\label{fig:two_patch_biharmonic_problem}
+	\caption{The computational domain $\Omega$ and the manufactured solution with the property $u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$ on $\partial{\Omega}$, which are used in Section~\ref{sec:two_patch}.}\label{fig:two_patch_biharmonic_problem}
 \end{figure}
 \section{Schedule}
 \begin{table}[hbt]
