@@ -45,6 +45,8 @@
 \usepackage{graphicx}% http://ctan.org/pkg/graphicx
 \usepackage{arydshln}
 \usepackage{subcaption} 
+\usepackage{color}
+\usepackage{tikz}
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -56,6 +58,10 @@
 \usepackage{mathtools}
 \usepackage{tikz}
 
+\definecolor{hred}{HTML}{e94b3c}
+\definecolor{hblue}{HTML}{6f9fd8}
+\newcommand{\redline}{\raisebox{2pt}{\tikz{\draw[-,hred,solid,line width = 1.2pt](0,0) -- (5mm,0);}}}
+\newcommand{\blueline}{\raisebox{2pt}{\tikz{\draw[-,hblue,solid,line width = 1.2pt](0,0) -- (5mm,0);}}}
 \newcommand\tikzmark[1]{%
   \tikz[remember picture,overlay]\coordinate (#1);}
 %% natbib.sty is loaded by default. However, natbib options can be
@@ -830,48 +836,152 @@ All our numerical results are obtained via an in-house C++ code.
 \subsection{A numerical study of the completeness of B\'ezier dual basis}
 We consider the completeness of B\'ezier dual basis on the one dimensional domain, $\Omega=(0,1)$. The domain $\Omega$ is uniformly partitioned into two elements, since the B\'ezier dual basis is equivalent to the global dual basis on one element domain. In the numerical test, we find the $L^2$ approximation of $n^{th}$ order Legendre polynomial in the B\'ezier dual space, as Legendre polynomials are orthogonal to each other.\par
 
-The test results are disappointed, the B\'ezier dual basis of arbitrary order is only complete for zeroth order polynomial i.e., only the error of the $L^2$ projection of constant function is below the round-off error. The projection results of Legendre polynomials up to $3^{rd}$ order onto $3^{rd}$ order B\'ezier dual basis are demonstrated in Fig.~\ref{fig:polynomial_completeness}. As can be seen, there are huge discrepancies between the approximations and original functions for all Legendre polynomials except constant. In other words, the $L^2$ approximation of B\'ezier dual basis is only of first-order, which might deteriorate the optimality of the finite element approximation. \par
+The test results are disappointed, the B\'ezier dual basis of arbitrary order is only complete for zeroth order polynomial i.e., only the error of the $L^2$ projection of constant function is below the round-off error. The results of projecting Legendre polynomials up to $3^{rd}$ order onto $3^{rd}$ order B\'ezier dual basis are demonstrated in Fig.~\ref{fig:polynomial_completeness}. As can be seen, there are huge discrepancies between the approximations and original functions for all Legendre polynomials except constant. In other words, the $L^2$ approximation of B\'ezier dual basis is only of first-order, which might deteriorate the optimality of the finite element approximation. \par
 
-In the finite element context, the construction of dual basis that can reproduce polynomial of degree $p-1$ is thoroughly studied in~\cite{oswald2001polynomial}. However, the construction procedure is complicated and gets even worse for higher inter-element continuity. Following this approach, a $p-1$ complete dual basis function for a quadratic B-spline basis function was constructed in~\cite{brivadis_isogeometric_2015}. But its support is much larger than its B-spline counterpart. On the other side, though the poor polynomial completeness, B\'ezier dual basis can be straightforwardly constructed, without solving additional linear system. Hence, in the rest examples, we will testify whether the B\'ezeir dual basis can be 
+In the finite element context, the construction of dual basis that can reproduce polynomial of degree $p-1$ is thoroughly studied in~\cite{oswald2001polynomial}. However, the construction procedure is complicated and gets even worse for higher inter-element continuity. Following this approach, a $p-1$ complete dual basis function for a quadratic B-spline basis function was constructed in~\cite{brivadis_isogeometric_2015}, but its support is much larger than its B-spline counterpart. On the other side, though the poor polynomial completeness, B\'ezier dual basis can be constructed in a straightforward manner, without solving additional linear system. Hence, in the rest examples, we will testify the performance of $C^1$ dual mortaring and the influence of the B\'ezier dual basis on the optimality of the finite element approximation.
 
 \begin{figure}
+    \captionsetup[subfigure]{labelformat=empty, font = footnotesize}
     \centering
-    \begin{subfigure}[b]{0.475\textwidth}
+    \begin{subfigure}[b]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Q3_p=0} 
+        \caption{$P_0(x)$}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.475\textwidth}  
+    \begin{subfigure}[b]{0.48\textwidth}  
         \centering 
         \includegraphics[width=\textwidth]{Q3_p=1}
+        \caption{$P_1(x)$}
     \end{subfigure}
     \vskip\baselineskip
-    \begin{subfigure}[b]{0.475\textwidth}   
-        \centering 
+    \begin{subfigure}[b]{0.48\textwidth}   
+        \centering
         \includegraphics[width=\textwidth]{Q3_p=2}
+        \caption{$P_2(x)$}
     \end{subfigure}
     \quad
-    \begin{subfigure}[b]{0.475\textwidth}   
+    \begin{subfigure}[b]{0.48\textwidth}   
         \centering 
         \includegraphics[width=\textwidth]{Q3_p=3}
+        \caption{$P_3(x)$}
     \end{subfigure}
-    \caption{The Legendre polynomials and their approximations in $3^{rd}$ order B\'ezier dual space composed of two elements. B\'ezier dual basis cannot duplicate all except constant function.} 
+    \caption{The Legendre polynomials (\protect\blueline) and their approximations (\protect\redline) in $3^{rd}$ order B\'ezier dual space composed of two elements. B\'ezier dual basis cannot duplicate all except the constant function.} 
     \label{fig:polynomial_completeness}
 \end{figure}
 
 \subsection{Biharmonic problem on a two-patch domain with homogeneous Dirichlet Boundary} \label{sec:two_patch}
 
-We first solve a biharmonic problem $\Delta^2{}u=f$ on a square domain $\Omega={(0,1)\times(0,1)}$. This domain is decomposed into two patches, as shown in Figure.~\ref{fig:two_patch_biharmonic_problem}. The manufactrued solution is given as
+We first solve a biharmonic problem $\Delta^2{}u=f$ on a square domain $\Omega={(0,1)\times(0,1)}$. The manufactrued solution is given as
 \begin{equation}
-    u(x,y)=\sin(\pi{x})^2\sin(\pi{y})^2,
+    u(x,y)=\sin(3\pi{x})^2\sin(3\pi{y})^2,
 \end{equation}
-which satisfies the homogeneous Dirichlet boundary condition ($u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$) and is visualized in Figure.~\ref{fig:two_patch_biharmonic_problem}. The right-hand side function $f$ can be obtained by applying the biharmonic operator to $u$.
+which satisfies the homogeneous Dirichlet boundary condition ($u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$) and is visualized in Figure.~\ref{fig:two_patch_biharmonic_problem}. The domain $\Omega$ is decomposed into two patches, namely $\Omega_1={(0,0.4)\times(0,1)}$ and $\Omega_2={(0.4,1)\times(0,1)}$, as shown in Figure.~\ref{fig:two_patch_biharmonic_problem_basic}. The right-hand side function $f$ can be obtained by applying the biharmonic operator to $u$.
+
 \begin{figure}[hbt]
-	\centering
-    \includegraphics[width=.47\linewidth]{two_patches_nonconform}
-    \includegraphics[width=.47\linewidth]{two_patches_solution}
-	\caption{The computational domain $\Omega$ and the manufactured solution with the property $u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$ on $\partial{\Omega}$, which are used in Section~\ref{sec:two_patch}.}\label{fig:two_patch_biharmonic_problem}
+    \centering
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_basic}
+        \caption{Simple non-conforming mesh}\label{fig:two_patch_biharmonic_problem_basic}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_distorted}
+        \caption{Distorted non-conforming mesh}\label{fig:two_patch_biharmonic_problem_distorted}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_nonmatch}
+        \caption{mismatched non-conforming mesh}\label{fig:two_patch_biharmonic_problem_nonmatch}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.47\textwidth}
+        \includegraphics[width=\textwidth]{two_patches_solution}
+        \caption{Reference solution}\label{fig:two_patch_biharmonic_problem_solution}
+    \end{subfigure}
+	\caption{The discretizations of computational domain $\Omega$ and the manufactured solution with the property $u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$ on $\partial{\Omega}$, which are used in Section~\ref{sec:two_patch}.}\label{fig:two_patch_biharmonic_problem}
 \end{figure}
+
+\begin{figure}[hbt]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_basic}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_basic_H2}
+    \end{subfigure}
+	\caption{Convergence plot for simple non-conforming patch coupling in~\ref{sec:two_patch}. Left: error measured in $L^2$ norm. Right: error measured in $H^2$ norm.}\label{fig:two_patc_biharmonic_convergence_basic}
+\end{figure}
+
+We conduct convergence studies for $p=2,3,4,5$ in both $L^2$ norm and $H^2$ norm, as shown in Fig.~\ref{fig:two_patc_biharmonic_convergence_basic}. However, though the theoretical flaw of B\'ezier dual basis, its performances in real problem are surprisingly well. As can be seen, both global dual basis and B\'ezier dual basis obtain optimal convergence rate in both norm measures for all polynomial degrees (The optimal convergence rate for $p=2$ in $L^2$ norm is $2$, which can be testified by Aubin-Nitsche duality argument[][][].). One conjecture can be made is that for biharmonic problems, the coefficients of the best approximation error of Lagrange multipliers are very small so that their contribution in the finite element approximation error can be ignored. Moreover, the accuracy of B\'ezier dual basis are higher than that of global dual basis with the same refinement level.\par
+
+\begin{figure}[hbt]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_distorted}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_distorted_H2}
+    \end{subfigure}
+	\caption{Convergence plot for distorted non-conforming patch coupling in~\ref{sec:two_patch}. Left: error measured in $L^2$ norm. Right: error measured in $H^2$ norm.}\label{fig:two_patc_biharmonic_convergence_distorted}
+\end{figure}
+
+\begin{figure}[hbt]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_nonmatch}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_nonmatch_H2}
+    \end{subfigure}
+	\caption{Convergence plot for mesh mismatched non-conforming patch coupling in~\ref{sec:two_patch}. Left: error measured in $L^2$ norm. Right: error measured in $H^2$ norm.}\label{fig:two_patc_biharmonic_convergence_nonmatch}
+\end{figure}
+
+\begin{figure}[hbt]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_diff_degree}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_diff_degree_H2}
+    \end{subfigure}
+	\caption{Convergence plot for degree mismatched non-conforming patch coupling in~\ref{sec:two_patch}. Left: error measured in $L^2$ norm. Right: error measured in $H^2$ norm.}\label{fig:two_patc_biharmonic_convergence_diff_degree}
+\end{figure}
+
+To study the performance of proposed methods in detail, we consider extreme conditions e.g. distorted mesh (Figure.~\ref{fig:two_patch_biharmonic_problem_distorted}), mismatched mesh (Figure.~\ref{fig:two_patch_biharmonic_problem_nonmatch}) and mismatched degree ($p_1=p_2+1$), respectively. For the distorted mesh, the proposed method with both global dual basis and B\'ezier dual basis perform similarly, the optimal convergence rates are reached for all cases. Some superconvergence behavior are observed (e.g. $p=3$ for both global and B\'ezier dual basis). This partially due to the geometrical locking existed in deformed meshes. For the mismatched mesh, the convergence performance of B\'ezier dual basis, though remains optimality, suffers a vertical lift of the error curves, which indicates that the B\'ezier dual basis are more sensitive to the mesh quality. However, for the finer mesh, the result obtained by $4^{th}$ order global dual basis become sub-optimal, we speculate this is caused by the $inf-sup$ instability in this specific circumstance. For the degree mismatched case, as expected, the convergence rates are between $p+1$ and $p+2$ in $L^2$ norm, and between $p-1$ and $p$ in $H^2$ norm for all tested cases. \par
+
+\begin{figure}[hbt]
+    \captionsetup[subfigure]{labelformat=empty, font = footnotesize, justification=centering}
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_basic_H2}
+        \caption{Simple non-conforming mesh}
+        \vspace*{3mm}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_distorted_H2}
+        \caption{Distorted non-conforming mesh}
+        \vspace*{3mm}
+    \end{subfigure}
+    %
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_nonmatch_H2}
+        \caption{Mismatched non-conforming mesh}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{two_patch_biharmonic_diff_degree_H2}
+        \caption{Degree mismatched non-conforming mesh}
+    \end{subfigure}
+	\caption{Convergence plot of the best $H^2$ approximation error for non-conforming patch coupling in~\ref{sec:two_patch}.}\label{fig:two_patch_best_approximation}
+\end{figure}
+
+Although a functional analysis of the contributions of the Lagrange multipliers' best approximation error in the finite element approximation error is beyond the scope of this paper and postponed to future work, here we study their influence in a numerical manner. The best approximation of $u$ in the discretized weak $C^1$ space $\mathcal{K}_b^h$ can be given as: find $u\in\mathcal{K}_b^h$ such that
+\begin{equation}
+    \langle{v^h,u^h}\rangle_{H^2}= \langle{v^h,u}\rangle_{H^2}\quad\quad\forall{v^h\in\mathcal{K}_b^h}.
+\end{equation}
+
+The best $H^2$ approximation error for the proposed methods for all scenarios are shown in Fig.~\ref{fig:two_patch_best_approximation}. As can be seen, the convergence plots of the best $H^2$ approximation error are identical to that of the finite element approximation error in $H^2$ norm. The best $H^2$ approximation errors for all cases are no more than $1\%$ smaller than that of the finite element counterparts, which confirms our speculation that the contribution of the Lagrange multipliers' best approximation errors are negligible for tested problems. In addition, the best approximation error for the $p=5$ global dual basis in the mismatched non-conforming mesh test case also suffers rate decay, which confirms that the main cause of the rate decay is due to the $inf-sup$ instability. 
+
+\subsection{Biharmonic problemon a three-patch domain with homogeneous Dirichlet Boundary}
+
+
 \section{Schedule}
 \begin{table}[hbt]
     \caption{A schedule of tasks and stages of my research towards the final dissertation.}
