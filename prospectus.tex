@@ -893,8 +893,8 @@ which satisfies the homogeneous Dirichlet boundary condition ($u=\frac{\partial{
         \caption{mismatched non-conforming mesh}\label{fig:two_patch_biharmonic_problem_nonmatch}
     \end{subfigure}
     \begin{subfigure}[b]{0.47\textwidth}
-        \includegraphics[width=\textwidth]{two_patches_solution}
-        \caption{Reference solution}\label{fig:two_patch_biharmonic_problem_solution}
+        \includegraphics[width=\textwidth]{two_patches_solution-plot}
+        \caption{Reference solution}\label{fig:two_patch_biharmonic_problem_solution-plot}
     \end{subfigure}
 	\caption{The discretizations of computational domain $\Omega$ and the manufactured solution with the property $u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$ on $\partial{\Omega}$, which are used in Section~\ref{sec:two_patch}.}\label{fig:two_patch_biharmonic_problem}
 \end{figure}
@@ -981,6 +981,18 @@ The best $H^2$ approximation error for the proposed methods for all scenarios ar
 
 \subsection{Biharmonic problemon a three-patch domain with homogeneous Dirichlet Boundary}
 
+\begin{figure}[hbt]
+    \centering
+    \begin{subfigure}[b]{0.43\textwidth}
+        \includegraphics[width=\textwidth]{three_patch_basic}
+        \caption{Non-conforming mesh}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.53\textwidth}
+        \includegraphics[width=\textwidth]{three_patches_solution-plot}
+        \caption{Reference solution}
+    \end{subfigure}
+	\caption{Convergence plot of the best $H^2$ approximation error for non-conforming patch coupling in~\ref{sec:two_patch}.}\label{fig:three_patch_biharmonic_problem}
+\end{figure}
 
 \section{Schedule}
 \begin{table}[hbt]
