@@ -453,7 +453,7 @@ Whereas the constraint~\eqref{eq:biharmonic_c0} can easily fit into the framewor
 \begin{lemma}
     Given two differentiable bijective geometric mappings $\mathbf{F}_{s}\colon\hat{\Omega}_s\rightarrow{\Omega}_s$ and $\mathbf{F}_{m}\colon\hat{\Omega}_m\rightarrow{\Omega}_m$, a $C^0$-continuous function $u$ is $C^1$-continuous in the physical domain if and only if
     \begin{equation}
-        [\frac{\partial{u}}{\partial{\mathbf{\xi}_s}}]_{\Gamma_{sm}}=0\text{ and }[\frac{\partial{u}}{\partial{\mathbf{\eta}_s}}]_{\Gamma_{sm}}=0. \label{eq:biharmonic_c1}
+        [\frac{\partial{u}}{\partial{\mathbf{\xi}_s}}]_{\Gamma_{sm}}=0\text{ and }[\frac{\partial{u}}{\partial{\mathbf{\eta}_s}}]_{\Gamma_{sm}}=0. \label{eq:biharmonic_c1_mod}
     \end{equation} 
 \end{lemma}
      
@@ -490,7 +490,7 @@ where $J(\cdot)$ is the Jacobian of the mapping in the argument. The Jacobian of
     J(\mathbf{E}_{sm})=J(\left(\mathbf{F}_{m}\right)^{-1}\circ\mathbf{F}_{s})=J(\left(\mathbf{F}_{m}\right)^{-1})\cdot{}J(\mathbf{F}_{s})=J(\mathbf{F}_{m})^{-1}\cdot{}J(\mathbf{F}_{s}).
 \end{equation}
 \subsection{Lagrange multiplier formulation and dual mortar formulation}
-We introduce two Lagrange multiplier spaces: $M_0$ is devoted to the $C^0$ constraint~\eqref{eq:biharmonic_c0} and $M_1$ is devoted to the $C^1$ constraint~\eqref{eq:biharmonic_c1}. The Lagrange multiplier formulation of the weak problem of~\eqref{eq:strong_biharmonic} reads: find $u\in{X_b}$, $\lambda_0\in{M_0}$ and $\lambda_1\in{M_1}$ such that:
+We introduce two Lagrange multiplier spaces: $M_0$ is devoted to the $C^0$ constraint~\eqref{eq:biharmonic_c0} and $M_1$ is devoted to the $C^1$ constraint~\eqref{eq:biharmonic_c1_mod}. The Lagrange multiplier formulation of the weak problem of~\eqref{eq:strong_biharmonic} reads: find $u\in{X_b}$, $\lambda_0\in{M_0}$ and $\lambda_1\in{M_1}$ such that:
 \begin{align}
     \begin{cases}
         a_b(u,v)+b_0(\lambda_0,v)+b_1(\lambda_1,v)=l(v),\quad\forall v\in{X_b};\\
@@ -527,17 +527,17 @@ However, in the following section, we will show that, with the help of dual basi
 Suppose that $\mathcal{X}_b^h\subset{\mathcal{X}_b}$, $\mathcal{M}_0^h\subset{\mathcal{M}_0}$ and $\mathcal{M}_1^h\subset{\mathcal{M}_1}$ are finite-dimensional linear subspaces of the Hilbert spaces $\mathcal{X}_b$, $\mathcal{M}_0$, and $\mathcal{M}_1$; we study the finite element approximation of the abstract problem~\eqref{eq:biharmonic_mixed}.
 \begin{assumption}
     All bilinear functionals are bounded; i.e.,  there exist positive constants $C_a$, $C_{b_0}$ and $C_{b_1}$ such that
-    \begin{align}
+    \begin{align}\label{aspt:bounded-operator}
         \begin{split}
-        \vert{a_b{(u,v)}}\vert&\leq{C_a\|u\|_{H^2}\|v\|_{H^2}}\\
-        \vert{b_0{(\mu_0,u)}}\vert&\leq{C_{b_0}\|\mu_0\|_{L^2}\|v\|_{H^2}}\\
-        \vert{b_1{(\mu_1,u)}}\vert&\leq{C_{b_1}\|\mu_1\|_{L^2}\|v\|_{H^2}}
+        \vert{a_b{(u,v)}}\vert&\leq{C_a\|u\|_{H^2}\|v\|_{H^2}},\\
+        \vert{b_0{(\mu_0,u)}}\vert&\leq{C_{b_0}\|\mu_0\|_{L^2}\|u\|_{H^2}},\\
+        \vert{b_1{(\mu_1,u)}}\vert&\leq{C_{b_1}\|\mu_1\|_{L^2}\|u\|_{H^2}},
         \end{split}
         \quad\quad
         \begin{split}
-            \forall{u,v}&\in{\mathcal{X}_b}\\
-            \forall{\mu_0}\in\mathcal{M}_0, {u}&\in{\mathcal{X}_b}\\
-            \forall{\mu_1}\in\mathcal{M}_1, {u}&\in{\mathcal{X}_b}
+            \forall{u,v}&\in{\mathcal{X}_b},\\
+            \forall{\mu_0}\in\mathcal{M}_0, {u}&\in{\mathcal{X}_b},\\
+            \forall{\mu_1}\in\mathcal{M}_1, {u}&\in{\mathcal{X}_b}.                                                                                        
         \end{split}
     \end{align} 
 \end{assumption}
@@ -553,14 +553,33 @@ Following standard techniques~\cite{brenner_mathematical_2007}, we now obtain a 
 \begin{theorem}
     Under the above assumptions, there exsits a unique solution $u^h\in{\mathcal{K}_b^h}$ satisfies~\eqref{eq:biharmonic_kernel}. Furthermore, 
     \begin{equation}
-        \|u-u^h\|_{H^2}\leq{\left(1+\frac{C_a}{c_a}\right)}\inf_{v^h\in{\mathcal{K}_b^h}}\|u-u^h\|_{H^2}+\frac{C_{b_0}}{c_a}\inf_{\mu_0^h\in{\mathcal{M}_0^h}}\|\lambda_0-\mu_0^h\|_{L^2}+\frac{C_{b_1}}{c_a}\inf_{\mu_1^h\in{\mathcal{M}_1^h}}\|\lambda_1-\mu_1^h\|_{L^2}
+        \|u-u^h\|_{H^2}\leq{\left(1+\frac{C_a}{c_a}\right)}\inf_{v^h\in{\mathcal{K}_b^h}}\|u-u^h\|_{H^2}+\frac{C_{b}}{c_a}\left(\inf_{\mu_0^h\in{\mathcal{M}_0^h}}\|\lambda_0-\mu_0^h\|_{L^2}+\inf_{\mu_1^h\in{\mathcal{M}_1^h}}\|\lambda_1-\mu_1^h\|_{L^2}\right),
     \end{equation}
+    where $C_b=\max\left({C_{b_0},C_{b_1}}\right)$.
 \end{theorem}
+
 Hence, the error of finite element approximations in broken $H^2(\Omega)$ norm are bounded by the best approximation error of $v^h\in{\mathcal{K}_b^h}$ in broken $H^2(\Omega)$ norm and $\mu_0^h\in{\mathcal{M}_0^h}$, $\mu_1^h\in{\mathcal{M}_1^h}$ in $L^2(\Gamma)$ norm. In general, the approximation ability of $p^{th}$ order piecewise polynomial in $\mathcal{X}_b^h$ is given by
 \begin{equation}
-    \|u-u^h\|_{H^2}\leq{Ch^{p-1}}.
+    \|u-u^h\|_{H^s}\leq{Ch^{p+1-s}}.
 \end{equation}
-where $C$ is a constant that is independent of the mesh size $h$. However, the optimality of $u^h\in\mathcal{K}_b^h$ requires the \textit{inf-sup} stability of bilinear functional $b_0$ and $b_1$. The analytical study of the \textit{inf-sup} stability is beyond the scope of this paper. Instead, we demonstrate the approximation ability of $\mathcal{K}_b^h$ by directly conducting $H^2$ projection in different numerical examples.\par
+where $C$ is a constant that is independent of the mesh size $h$. To transform approximation estimates in $\mathcal{K}_b^h$ into standard approximation estimates in $\mathcal{X}_b^h$, we need the following assumption:
+\begin{assumption}\label{aspt:inf-sub}
+    Furthermore, we assume that the bilinear functionals $b_0(\cdot,\cdot)$ and $b_1(\cdot,\cdot)$ are inf-sup stable in the discretized formulation, i.e., there exist positive constants $\beta_0$ and $\beta_1$ independent of the mesh size such that
+    \begin{align}
+        \inf_{\mu_0^h\in\mathcal{M}_0^h}\sup_{u^h\in\mathcal{X}_b^h}\frac{\vert{b_0\left({\mu_0^h,u}\right)}\vert}{\|u^h\|_{H^2}\|\mu_0^h\|_{L^2}}\geq{\beta_0},\\
+        \inf_{\mu_1^h\in\mathcal{M}_1^h}\sup_{u^h\in\mathcal{X}_b^h}\frac{\vert{b_1\left({\mu_0^h,u}\right)}\vert}{\|u^h\|_{H^2}\|\mu_1^h\|_{L^2}}\geq{\beta_1}.
+    \end{align}
+\end{assumption}
+
+\begin{theorem}
+    Under the assumptions, we have that, for any $u\in\mathcal{K}_b$,  
+    \begin{equation}
+        \inf_{v^h\in{\mathcal{K}_b^h}}\|{u-v^h}\|_{H^2}\leq\left({1+\frac{C_b}{\beta}}\right)\inf_{w^h\in{\mathcal{X}_b^h}}\|{u-w^h}\|_{H^2}
+    \end{equation}
+    where $\beta=\min\left({\beta_{0},\beta_{1}}\right)$.
+\end{theorem}
+
+As can be seen, the optimality of $u^h\in\mathcal{K}_b^h$ requires the \textit{inf-sup} stability of bilinear functional $b_0$ and $b_1$. The analytical study of the \textit{inf-sup} stability is beyond the scope of this paper. Instead, we demonstrate the approximation ability of $\mathcal{K}_b^h$ by directly conducting $H^2$ projection in different numerical examples.\par
 
 Meanwhile, the approximation ability of the Lagrange multiplier spaces $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ also influence the optimality of the finite element approximation. Whereas $u$ is approximated in $H^2$ space, $\lambda_0$ and $\lambda_1$ are approximated in $L^2$ space. Hence, the optimality of the finite element approximation requires that both $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ are at least $p-2$ complete, i.e., functions in $\mathcal{M}_0^h$ and $\mathcal{M}_1^h$ can exactly represent polynomials up to order $p-2$.
 
@@ -870,7 +889,7 @@ In the finite element context, the construction of dual basis that can reproduce
     \label{fig:polynomial_completeness}
 \end{figure}
 
-\subsection{Biharmonic problem on a two-patch domain with homogeneous Dirichlet Boundary} \label{sec:two_patch}
+\subsection{Biharmonic problem on a two-patch domain} \label{sec:two_patch}
 
 We first solve a biharmonic problem $\Delta^2{}u=f$ on a square domain $\Omega={(0,1)\times(0,1)}$. The manufactrued solution is given as
 \begin{equation}
@@ -945,7 +964,7 @@ We conduct convergence studies for $p=2,3,4,5$ in both $L^2$ norm and $H^2$ norm
 	\caption{Convergence plot for degree mismatched non-conforming patch coupling in~\ref{sec:two_patch}. Left: error measured in $L^2$ norm. Right: error measured in $H^2$ norm.}\label{fig:two_patc_biharmonic_convergence_diff_degree}
 \end{figure}
 
-To study the performance of proposed methods in detail, we consider extreme conditions e.g. distorted mesh (Figure.~\ref{fig:two_patch_biharmonic_problem_distorted}), mismatched mesh (Figure.~\ref{fig:two_patch_biharmonic_problem_nonmatch}) and mismatched degree ($p_1=p_2+1$), respectively. For the distorted mesh, the proposed method with both global dual basis and B\'ezier dual basis perform similarly, the optimal convergence rates are reached for all cases. Some superconvergence behavior are observed (e.g. $p=3$ for both global and B\'ezier dual basis). This partially due to the geometrical locking existed in deformed meshes. For the mismatched mesh, the convergence performance of B\'ezier dual basis, though remains optimality, suffers a vertical lift of the error curves, which indicates that the B\'ezier dual basis are more sensitive to the mesh quality. However, for the finer mesh, the result obtained by $4^{th}$ order global dual basis become sub-optimal, we speculate this is caused by the $inf-sup$ instability in this specific circumstance. For the degree mismatched case, as expected, the convergence rates are between $p+1$ and $p+2$ in $L^2$ norm, and between $p-1$ and $p$ in $H^2$ norm for all tested cases. \par
+To study the performance of proposed methods in detail, we consider extreme conditions e.g. distorted mesh (Figure.~\ref{fig:two_patch_biharmonic_problem_distorted}), mismatched mesh (Figure.~\ref{fig:two_patch_biharmonic_problem_nonmatch}) and mismatched degree ($p_1=p_2+1$), respectively. For the distorted mesh, the proposed method with both global dual basis and B\'ezier dual basis perform similarly, the optimal convergence rates are reached for all cases. Some superconvergence behavior are observed (e.g. $p=3$ for both global and B\'ezier dual basis). This partially due to the geometrical locking existed in deformed meshes. For the mismatched mesh, the convergence performance of B\'ezier dual basis, though remains optimality, suffers a vertical lift of the error curves, which indicates that the B\'ezier dual basis are more sensitive to the mesh quality. However, for the finer mesh, the result obtained by $5^{th}$ order global dual basis become sub-optimal, we speculate this is caused by the \textit{inf-sup} instability in this specific circumstance. For the degree mismatched case, as expected, the convergence rates are between $p+1$ and $p+2$ in $L^2$ norm, and between $p-1$ and $p$ in $H^2$ norm for all tested cases. \par
 
 \begin{figure}[hbt]
     \captionsetup[subfigure]{labelformat=empty, font = footnotesize, justification=centering}
@@ -979,7 +998,7 @@ Although a functional analysis of the contributions of the Lagrange multipliers'
 
 The best $H^2$ approximation error for the proposed methods for all scenarios are shown in Fig.~\ref{fig:two_patch_best_approximation}. As can be seen, the convergence plots of the best $H^2$ approximation error are identical to that of the finite element approximation error in $H^2$ norm. The best $H^2$ approximation errors for all cases are no more than $1\%$ smaller than that of the finite element counterparts, which confirms our speculation that the contribution of the Lagrange multipliers' best approximation errors are negligible for tested problems. In addition, the best approximation error for the $p=5$ global dual basis in the mismatched non-conforming mesh test case also suffers rate decay, which confirms that the main cause of the rate decay is due to the $inf-sup$ instability. 
 
-\subsection{Biharmonic problemon a three-patch domain with homogeneous Dirichlet Boundary}
+\subsection{Biharmonic problemon multi-patch domains}
 
 \begin{figure}[hbt]
     \centering

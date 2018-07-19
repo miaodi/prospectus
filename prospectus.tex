@@ -453,7 +453,7 @@ Whereas the constraint~\eqref{eq:biharmonic_c0} can easily fit into the framewor
 \begin{lemma}
     Given two differentiable bijective geometric mappings $\mathbf{F}_{s}\colon\hat{\Omega}_s\rightarrow{\Omega}_s$ and $\mathbf{F}_{m}\colon\hat{\Omega}_m\rightarrow{\Omega}_m$, a $C^0$-continuous function $u$ is $C^1$-continuous in the physical domain if and only if
     \begin{equation}
-        [\frac{\partial{u}}{\partial{\mathbf{\xi}_s}}]_{\Gamma_{sm}}=0\text{ and }[\frac{\partial{u}}{\partial{\mathbf{\eta}_s}}]_{\Gamma_{sm}}=0. \label{eq:biharmonic_c1}
+        [\frac{\partial{u}}{\partial{\mathbf{\xi}_s}}]_{\Gamma_{sm}}=0\text{ and }[\frac{\partial{u}}{\partial{\mathbf{\eta}_s}}]_{\Gamma_{sm}}=0. \label{eq:biharmonic_c1_mod}
     \end{equation} 
 \end{lemma}
      
@@ -490,7 +490,7 @@ where $J(\cdot)$ is the Jacobian of the mapping in the argument. The Jacobian of
     J(\mathbf{E}_{sm})=J(\left(\mathbf{F}_{m}\right)^{-1}\circ\mathbf{F}_{s})=J(\left(\mathbf{F}_{m}\right)^{-1})\cdot{}J(\mathbf{F}_{s})=J(\mathbf{F}_{m})^{-1}\cdot{}J(\mathbf{F}_{s}).
 \end{equation}
 \subsection{Lagrange multiplier formulation and dual mortar formulation}
-We introduce two Lagrange multiplier spaces: $M_0$ is devoted to the $C^0$ constraint~\eqref{eq:biharmonic_c0} and $M_1$ is devoted to the $C^1$ constraint~\eqref{eq:biharmonic_c1}. The Lagrange multiplier formulation of the weak problem of~\eqref{eq:strong_biharmonic} reads: find $u\in{X_b}$, $\lambda_0\in{M_0}$ and $\lambda_1\in{M_1}$ such that:
+We introduce two Lagrange multiplier spaces: $M_0$ is devoted to the $C^0$ constraint~\eqref{eq:biharmonic_c0} and $M_1$ is devoted to the $C^1$ constraint~\eqref{eq:biharmonic_c1_mod}. The Lagrange multiplier formulation of the weak problem of~\eqref{eq:strong_biharmonic} reads: find $u\in{X_b}$, $\lambda_0\in{M_0}$ and $\lambda_1\in{M_1}$ such that:
 \begin{align}
     \begin{cases}
         a_b(u,v)+b_0(\lambda_0,v)+b_1(\lambda_1,v)=l(v),\quad\forall v\in{X_b};\\
@@ -889,11 +889,11 @@ In the finite element context, the construction of dual basis that can reproduce
     \label{fig:polynomial_completeness}
 \end{figure}
 
-\subsection{Biharmonic problem on a two-patch domain with homogeneous Dirichlet Boundary} \label{sec:two_patch}
+\subsection{Biharmonic problem on a two-patch domain} \label{sec:two_patch}
 
 We first solve a biharmonic problem $\Delta^2{}u=f$ on a square domain $\Omega={(0,1)\times(0,1)}$. The manufactrued solution is given as
 \begin{equation}
-    u(x,y)=\sin(3\pi{x})^2\sin(3\pi{y})^2,
+    u(x,y)=\sin(2\pi{x})\sin(2\pi{y})(xy(x-1)(y-1))^2,
 \end{equation}
 which satisfies the homogeneous Dirichlet boundary condition ($u=\frac{\partial{u}}{\partial{\mathbf{n}}}=0$) and is visualized in Figure.~\ref{fig:two_patch_biharmonic_problem}. The domain $\Omega$ is decomposed into two patches, namely $\Omega_1={(0,0.4)\times(0,1)}$ and $\Omega_2={(0.4,1)\times(0,1)}$, as shown in Figure.~\ref{fig:two_patch_biharmonic_problem_basic}. The right-hand side function $f$ can be obtained by applying the biharmonic operator to $u$.
 
@@ -996,9 +996,9 @@ Although a functional analysis of the contributions of the Lagrange multipliers'
     \langle{v^h,u^h}\rangle_{H^2}= \langle{v^h,u}\rangle_{H^2}\quad\quad\forall{v^h\in\mathcal{K}_b^h}.
 \end{equation}
 
-The best $H^2$ approximation error for the proposed methods for all scenarios are shown in Fig.~\ref{fig:two_patch_best_approximation}. As can be seen, the convergence plots of the best $H^2$ approximation error are identical to that of the finite element approximation error in $H^2$ norm. The best $H^2$ approximation errors for all cases are no more than $1\%$ smaller than that of the finite element counterparts, which confirms our speculation that the contribution of the Lagrange multipliers' best approximation errors are negligible for tested problems. In addition, the best approximation error for the $p=5$ global dual basis in the mismatched non-conforming mesh test case also suffers rate decay, which confirms that the main cause of the rate decay is due to the $inf-sup$ instability. 
+The best $H^2$ approximation error for the proposed methods for all scenarios are shown in Fig.~\ref{fig:two_patch_best_approximation}. As can be seen, the convergence plots of the best $H^2$ approximation error are identical to that of the finite element approximation error in $H^2$ norm. The best $H^2$ approximation errors for all cases are no more than $1\%$ smaller than that of the finite element counterparts, which confirms our speculation that the contribution of the Lagrange multipliers' best approximation errors are negligible for tested problems. In addition, the best approximation error for the $p=5$ global dual basis in the mismatched non-conforming mesh test case also suffers rate decrease, which confirms that the main cause of the rate slow down is due to the \textit{inf-sup} instability.\par
 
-\subsection{Biharmonic problemon a three-patch domain with homogeneous Dirichlet Boundary}
+\subsection{Biharmonic problem on multi-patch domains} \label{sec:multi-patch}
 
 \begin{figure}[hbt]
     \centering
@@ -1010,7 +1010,80 @@ The best $H^2$ approximation error for the proposed methods for all scenarios ar
         \includegraphics[width=\textwidth]{three_patches_solution-plot}
         \caption{Reference solution}
     \end{subfigure}
-	\caption{Convergence plot of the best $H^2$ approximation error for non-conforming patch coupling in~\ref{sec:two_patch}.}\label{fig:three_patch_biharmonic_problem}
+	\caption{The three-patch domain parameterization and the manufactured solution for Section~\ref{sec:multi-patch}.}\label{fig:three_patch_biharmonic_problem}
+\end{figure}
+
+Let us now exam the effect of the presence of cross-points. We first solve a biharmonic problem with the manufactured solution
+
+\begin{equation}
+    u(x,y)=sin(2\pi{x})sin(2\pi{y})\left({y(3x-y)(3x+2y-9)}\right)^2,
+\end{equation}
+
+on a triangular domain decomposed into three patches, as shown in Fig.~\ref{fig:three_patch_biharmonic_problem}. 
+
+\begin{figure}
+    \captionsetup[subfigure]{labelformat=empty, font = footnotesize, justification=centering}
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{three_patch_biharmonic_basic}
+      \caption{$L^2$ error of the biharmonic problem}
+    \end{subfigure}%
+    \begin{subfigure}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{three_patch_biharmonic_basic_H2}
+      \caption{$H^2$ error of the biharmonic problem}
+    \end{subfigure}\par\medskip
+    \begin{subfigure}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{three_patch_projection_basic_H2}
+      \caption{$H^2$ error of the projection problem}
+    \end{subfigure}%
+    \caption{Convergence plots for the biharmonic problem on the three-patch domain in Section~\ref{sec:multi-patch}.}
+    \label{fig:three_patch_result}
+\end{figure}
+
+The convergence behaviors of the proposed methods are studied in Fig.~\ref{fig:three_patch_result}. For polynomial order $p=2,3,4$, the convergence results of both global dual and B\'ezier dual in $L^2$ and $H^2$ norm are in accordance with the finite element approximation theory. However, for $p=5$, sub-optimality are observed for both methods in both norm measures in the $5^{th}$ refinement. The $H^2$ projection convergence plot reveals that the causes of the rate slow down for global dual and B\'ezier dual are different. For B\'ezier dual, the $H^2$ projection errors decay theoretically, which indicates that the rate slow down in corresponding biharmonic problem is due to the poor approximation of the B\'ezier dual basis. The rate slow down is also observed in the $H^2$ projection of global dual case, which means the main cause of the rate slow down of global dual case is the \textit{inf-sup} instatiblity. Nonetheless, despite this sub-optimal convergence,the proposed methods still converge asymptotically. \par
+
+\begin{figure}[hbt]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{five_patch_basic}
+        \caption{Non-conforming mesh}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{five_patch_solution-plot}
+        \caption{Reference solution}
+    \end{subfigure}
+	\caption{The three-patch domain parameterization and the manufactured solution for Section~\ref{sec:multi-patch}.}\label{fig:five_patch_biharmonic_problem}
+\end{figure}
+
+Whereas the poor polynomial completeness of B\'ezier dual basis does not affect the performance of two patch coupling, we do observe its influence for multi-patch coupling with the presence of the cross-point. To further demonstrate the effect of the presence of cross-points, we solve a biharmonic problem on a five-patch domain, with the analytical solution
+\begin{equation}
+    u(x,y)=\sin(2\pi{x})^2\sin(2\pi{y})^2,
+\end{equation}
+as shown in Fig.~\ref{fig:five_patch_biharmonic_problem}. The convergence behaviors, demonstrated in Fig.~\ref{fig:five_patch_result}, are similar to that of the three-patch case. The introducing of more cross-points and more coupled intersections seems does not deteriorate the performances of the proposed methods. Without constructing a dual basis with higher order polynomial completeness, a feasible way to recover the optimality of the coupling algorithm is to locally refine the basis function on the slave side~\cite{zou2018isogeometric}. Though the tensor product structures of each patchs are lost, no additional degrees of freedom are introduced to the constrained problem and the domination of Lagrange multiplier approximation error can be postponed. 
+
+\begin{figure}
+    \captionsetup[subfigure]{labelformat=empty, font = footnotesize, justification=centering}
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{five_patch_biharmonic_basic}
+      \caption{$L^2$ error of the biharmonic problem}
+    \end{subfigure}%
+    \begin{subfigure}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{five_patch_biharmonic_basic_H2}
+      \caption{$H^2$ error of the biharmonic problem}
+    \end{subfigure}\par\medskip
+    \begin{subfigure}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{five_patch_projection_basic_H2}
+      \caption{$H^2$ error of the projection problem}
+    \end{subfigure}%
+    \caption{Convergence plots for the biharmonic problem on the five-patch domain in Section~\ref{sec:multi-patch}.}
+    \label{fig:five_patch_result}
 \end{figure}
 
 \section{Schedule}
