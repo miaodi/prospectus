@@ -1095,6 +1095,171 @@ as shown in Fig.~\ref{fig:five_patch_biharmonic_problem}. The convergence behavi
 \end{table}
 Although there are various aspects in weak $C^1/G^1$ coupling deserve a thorough study, our main focus in this stage is to extend our finding in an abstract problem (biharmonic problem) to practical problems (e.g. Kirchhoff-Love shell). Compared to the planar biharmonic problem, Kirchhoff-Love shell is a more challenging problem, as the computational domain is in $\mathbb{R}^3$ and the constraint is not isotropically applied in each direction. Hence, a more generalized constraint is needed to compromise geometries with kinks. And validations are needed for two-patch and multi-patch Kirchhoff-Love shells. Meanwhile, although we have implemented two algorithms to solve multi-patch biharmonic problems, the boundary modification method does not delivers ideal results while an additional factorization is needed for explicitly solving the null space. We will still make efforts in finding a feasible boundary modification for multi-patch coupling. A detailed time line is shown in Table.~\ref{tab:schedule_gantt}.
 
+\section{Weak coupling for Kirchhoff-Love shell}
+\subsection{Kirchhoff-Love shell formulation}
+A thin shell is defined as a shell with a thickness which is small compared to its other dimensions. Hence, the geometry description of a thin shell can be given by its middle surface and the corresponding thickness. Here, we use $\mathbf{X}(\xi, \eta),\mathbf{x}(\xi, \eta):\mathbb{R}^2\rightarrow\mathbb{R}^3$ to describe the middle surface of a shell in the reference and current configurations, respectively. The middle surface base vectors in both configurations are defined as
+
+\begin{equation}
+    \begin{cases}
+        \mathbf{A}_1 = \frac{\partial\mathbf{X}}{\partial\xi} \\
+        \mathbf{A}_2 = \frac{\partial\mathbf{X}}{\partial\eta} \\
+        \mathbf{A}_3 = \frac{\mathbf{A}_1\times\mathbf{A}_2}{\vert{\mathbf{A}_1\times\mathbf{A}_2}\vert} \\
+    \end{cases},\qquad
+    \begin{cases}
+        \mathbf{a}_1 = \frac{\partial\mathbf{x}}{\partial\xi} \\
+        \mathbf{a}_2 = \frac{\partial\mathbf{x}}{\partial\eta} \\
+        \mathbf{a}_3 = \frac{\mathbf{a}_1\times\mathbf{a}_2}{\vert{\mathbf{a}_1\times\mathbf{a}_2}\vert} \\
+    \end{cases}.    
+\end{equation}
+The covariant and contravariant components of the surface metric tensors in both configurations are:
+\begin{equation}
+    A_{ij}=\mathbf{A}_i\cdot\mathbf{A}_j, \qquad {}a_{ij}=\mathbf{a}_i\cdot\mathbf{a}_j, \qquad {} A^{ij}=A_{ij}^{-1}, \qquad {}a^{ij}=a_{ij}^{-1}.
+\end{equation}
+The reference $\mathbf{R}$ and current $\mathbf{r}$ position vectors of a material point on a thin shell can be parameterized as
+\begin{align}
+    \mathbf{R} &= \mathbf{X}(\xi, \eta) +\zeta\mathbf{A}_3(\xi, \eta),\\
+    \mathbf{r} &= \mathbf{x}(\xi, \eta) +\zeta\mathbf{a}_3(\xi, \eta),\qquad\zeta\in\left[{-\frac{h}{2}, \frac{h}{2}}\right].
+\end{align}
+The displacement vector of the middle surface is defined as
+\begin{equation}
+    \mathbf{u}(\xi, \eta) = \mathbf{x}(\xi, \eta) - \mathbf{X}(\xi, \eta).
+\end{equation}
+The covariant base vectors in both configurations are
+\begin{equation}
+    \begin{cases}
+        \mathbf{G}_1 = \frac{\partial\mathbf{R}}{\partial\xi} \\
+        \mathbf{G}_2 = \frac{\partial\mathbf{R}}{\partial\eta} \\
+        \mathbf{G}_3 = \frac{\mathbf{G}_1\times\mathbf{G}_2}{\vert{\mathbf{G}_1\times\mathbf{G}_2}\vert} \\
+    \end{cases},\qquad
+    \begin{cases}
+        \mathbf{g}_1 = \frac{\partial\mathbf{r}}{\partial\xi} \\
+        \mathbf{g}_2 = \frac{\partial\mathbf{r}}{\partial\eta} \\
+        \mathbf{g}_3 = \frac{\mathbf{g}_1\times\mathbf{g}_2}{\vert{\mathbf{g}_1\times\mathbf{g}_2}\vert} \\
+    \end{cases}.    
+\end{equation}
+The covariant metric coefficients in both configurations are defined as
+\begin{equation}
+    G_{ij}=\mathbf{G}_i\cdot\mathbf{G}_j, \qquad {}g_{ij}=\mathbf{g}_i\cdot\mathbf{g}_j.
+\end{equation}
+The contravariant base vectors are computed by 
+\begin{equation}
+    \mathbf{G}^i = G^{ij}\mathbf{G}_i, \qquad\mathbf{g}^i = g^{ij}\mathbf{g}_i,
+\end{equation}
+with
+\begin{equation}
+    g^{ij} = g_{ij}^{-1}, \qquad G^{ij} = G_{ij}^{-1}.
+\end{equation}
+The Green-Lagrange strain tensor is
+\begin{equation}
+    \mathbf{E}=\frac{1}{2}\left({\mathbf{F}^T\mathbf{F}-\mathbf{I}}\right).\label{eq:Green_Lagrange}
+\end{equation}
+With
+\begin{equation}
+    \mathbf{F} = \mathbf{g}_i\otimes\mathbf{G}^i,
+\end{equation}
+equation~\eqref{eq:Green_Lagrange} can be rewritten as
+\begin{equation}
+    \mathbf{E}=E_{ij}\mathbf{G}^i\otimes\mathbf{G}^j=\frac{1}{2}\left({g_{ij}-G_{ij}}\right)\mathbf{G}^i\otimes\mathbf{G}^j.
+\end{equation}
+Under the assumption that straight lines normal to the mid-surface remain straight and normal to the mid-surface after deformation, the transverse shear strains of a Kirchhoff-Love shell vanish ($E_{\alpha{}3}=0$). The strains can be split into membrane strains and bending strains~\cite{bischoff2018models}:
+\begin{align}
+    E_{\alpha \beta}& = \epsilon_{\alpha \beta}+\zeta\kappa_{\alpha \beta},\\
+    \epsilon_{\alpha \beta} &= \frac{1}{2}\left({a_{\alpha \beta}-A_{\alpha \beta}}\right),\\
+    \kappa_{\alpha \beta} &= \mathbf{a}_{3}\cdot\mathbf{a}_{\alpha{,} \beta}-\mathbf{A}_3\cdot\mathbf{A}_{\alpha{,} \beta}.
+\end{align}
+The corresponding membrane and bending stresses are given as:
+\begin{align}
+    n^{\alpha\beta} &= \frac{Eh}{1-\nu^2}H^{\alpha\beta\gamma\delta}\epsilon_{\gamma\delta},\\
+    m^{\alpha\beta} &= \frac{Eh^3}{12(1-\nu^2)}H^{\alpha\beta\gamma\delta}\kappa_{\gamma\delta},
+\end{align}
+where $E$ is the Young’s modulus, $\nu$ is Poisson’s ratio, and
+\begin{equation}
+    H^{\alpha\beta\gamma\delta} = \nu A^{\alpha\beta}A^{\gamma\delta} + \frac{1}{2}(1-\nu)\left({A^{\alpha\gamma}A^{\beta\delta}+A^{\alpha\delta}A^{\beta\gamma}}\right).
+\end{equation}
+To restrict the analysis to small deformation, the membrane strains and bending strains are linearized as
+\begin{align}
+    \epsilon_{\alpha \beta} &= \frac{1}{2}\left({\mathbf{A}_{\alpha}\cdot{}\mathbf{u}_{,\beta}+\mathbf{u}_{,\alpha}\cdot\mathbf{A}_{\beta}}\right),\label{eq:membrane_strain}\\
+    \begin{split}
+    \kappa_{\alpha \beta} &= -\mathbf{u}_{,\alpha\beta}\cdot\mathbf{A}_3+\frac{1}{\sqrt{\vert\mathbf{A}_1\times\mathbf{A}_2\vert}}\left({\mathbf{u}_{,1}\cdot\left({\mathbf{A}_{\alpha,\beta}\times\mathbf{A}_{2}}\right)+\mathbf{u}_{,2}\cdot\left({\mathbf{A}_{1}\times\mathbf{A}_{\alpha,\beta}}\right)}\right)\\
+    &+\frac{\mathbf{A}_3\cdot\mathbf{A}_{\alpha,\beta}}{\sqrt{\vert\mathbf{A}_1\times\mathbf{A}_2\vert}}\left({\mathbf{u}_{,1}\cdot\left({\mathbf{A}_{2}\times\mathbf{A}_{3}}\right)+\mathbf{u}_{,2}\cdot\left({\mathbf{A}_{3}\times\mathbf{A}_{1}}\right)}\right).
+    \end{split}\label{eq:bending_strain}
+\end{align}
+need to add equilibrium..
+\subsection{Continuity constraints}
+For the multi-patch formulation of the Kirchhoff-Love shell, the $C^0$ continuity must be satisfied by the displacement field $\mathbf{u}$ so that the deformed geometry remains continuous. However, in the linearized bending strain $\kappa_{\alpha\beta}$, the second order derivative $\mathbf{u}_{,\alpha\beta}$ appears, and therefore an additional constraint is required. From the physical perspective, the additional constraint should deliver the bending moment from one patch to another; from the mathematical perspective, the additional constraint should ensure the linearized bending strain $\kappa_{\alpha\beta}$ to be square integrable. \par
+
+For a smooth Kirchhoff-Love shell, \textit{i.e.} the director $\mathbf{A}_3$ is continuous, $\kappa_{\alpha\beta}$ is square integrable if $\mathbf{u}$ is $C^1$ continuous. However, shell structures are not neccessarily smooth, geometries with kinks and folds are commonly used in engineering practices. Hence, a generalized constraint should be developed to handle these non-trivial patch configurations.\par
+
+A Kirchhoff-Love shell with the appearance of kinks is demonstrated in Fig.~\ref{fig:KL-shell-geometry}, where the intersection between the slave patch $\Omega_s$ and the master patch $\Omega_m$ is denoted by the red curve. The kink appears as the director $\mathbf{A}_3^s$ and $\mathbf{A}_3^m$ are not the same. A rotation tensor $\mathbf{R}$ from $\mathbf{A}_3^s$ to $\mathbf{A}_3^m$ can be determined by the Rodrigues's rotation formula as:
+\begin{align}
+    \mathbf{v} &= \mathbf{A}_3^s\times\mathbf{A}_3^m,\\
+    c &=  \mathbf{A}_3^s\cdot\mathbf{A}_3^m,\\
+    \mathbf{R} &= \mathbf{I}+\left[\mathbf{v}\right]_{\times}+\frac{1}{1+c}\left[\mathbf{v}\right]_{\times}^2,
+\end{align}
+where $\left[\bullet\right]_{\times}$ is the skew-symmetric matrix form of the cross product ${\bullet}\times$,
+\begin{equation}
+    \left[\mathbf{v}\right]_{\times}=
+    \begin{bmatrix}
+        0 & -v_3 & v_2\\
+        v_3 & 0 & -v_1\\
+        -v_2 & v_1 & 0
+    \end{bmatrix}.
+\end{equation}
+
+Similar to the biharmonic problem, we extend the local coordinate system $(\xi_s, \eta_s)$ of $\Omega_s$ to $\Omega_m$, such that
+\begin{align}
+    {\mathbf{A}_1^m}'&\colon=\frac{\partial\mathbf{X}_m}{\partial\xi_s}=\mathbf{R}\mathbf{A}_1^s,\\
+    {\mathbf{A}_2^m}'&\colon=\frac{\partial\mathbf{X}_m}{\partial\eta_s}=\mathbf{R}\mathbf{A}_2^s.
+\end{align}
+The Jacobian matrix
+\begin{equation}
+    \mathbf{J}:=
+    \begin{bmatrix}
+        \frac{\partial\xi_m}{\partial\xi_s} & \frac{\partial\xi_m}{\partial\eta_s}\\
+        \frac{\partial\eta_m}{\partial\xi_s} & \frac{\partial\eta_m}{\partial\eta_s}
+    \end{bmatrix},
+\end{equation}
+can be obtained by solving the following linear problem 
+\begin{equation}
+    \begin{bmatrix}
+        \frac{\partial\mathbf{X}_m}{\partial\xi_m} & \frac{\partial\mathbf{X}_m}{\partial\eta_m}
+    \end{bmatrix}
+    \cdot\mathbf{J}=
+    \begin{bmatrix}
+        \mathbf{R}\mathbf{A}_1^s & \mathbf{R}\mathbf{A}_2^s
+    \end{bmatrix}.
+\end{equation}
+The derivatives of $\mathbf{u}_m$ w.r.t. the director ${\mathbf{A}_1^m}'$ and ${\mathbf{A}_2^m}'$ can be found as
+\begin{equation}
+    \begin{bmatrix}
+        \frac{\partial\mathbf{u}_m}{\partial{\mathbf{A}_1^m}'} & \frac{\partial\mathbf{u}_m}{\partial{\mathbf{A}_2^m}'}
+    \end{bmatrix}
+    :=
+    \begin{bmatrix}
+        \frac{\partial\mathbf{u}_m}{\partial\xi_s} & \frac{\partial\mathbf{u}_m}{\partial\eta_s}
+    \end{bmatrix}    
+    =
+    \begin{bmatrix}
+        \frac{\partial\mathbf{u}_m}{\partial\xi_m} & \frac{\partial\mathbf{u}_m}{\partial\eta_m}
+    \end{bmatrix}   
+    \cdot\mathbf{J}
+\end{equation}
+
+\begin{figure}[hbt]
+    \centering
+    \captionsetup[subfigure]{font = footnotesize}
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=.6\textwidth]{two-patch-kl}
+        \caption{A two patch non-conforming Kirchhoff-Love shell with the intersection denoted by the red line. The directors on each side of the intersection determine a rotation angle $\theta$.}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=.9\textwidth]{combine}
+        \caption{The local coordinate system on the slave patch $\Omega_{s}$ is rotated and mapped to the master patch $\Omega_{m}$.}
+    \end{subfigure}
+	\caption{A two patch non-conforming Kirchhoff-Love shell configuration illustrating the coupling with the appearance of kinks.}\label{fig:KL-shell-geometry}
+\end{figure}
 \clearpage
 \bibliography{Zotero.bib}
 \bibliographystyle{plain}
