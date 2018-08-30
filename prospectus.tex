@@ -94,6 +94,10 @@
 \newcommand{\Bezier}{{B\'{e}zier} }
 \newtheorem{lemma}{Lemma}
 
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+
 \newtheorem{assumption}{Assumption}
 \newtheorem{theorem}{Theorem}
 
@@ -1229,7 +1233,7 @@ can be obtained by solving the following linear problem
         \mathbf{R}\mathbf{A}_1^s & \mathbf{R}\mathbf{A}_2^s
     \end{bmatrix}.
 \end{equation}
-The derivatives of $\mathbf{u}_m$ w.r.t. the director ${\mathbf{A}_1^m}'$ and ${\mathbf{A}_2^m}'$ can be found as
+The derivatives of $\mathbf{u}_m$ w.r.t. directions ${\mathbf{A}_1^m}'$ and ${\mathbf{A}_2^m}'$ can be found as
 \begin{equation}
     \begin{bmatrix}
         \frac{\partial\mathbf{u}_m}{\partial{\mathbf{A}_1^m}'} & \frac{\partial\mathbf{u}_m}{\partial{\mathbf{A}_2^m}'}
@@ -1242,8 +1246,55 @@ The derivatives of $\mathbf{u}_m$ w.r.t. the director ${\mathbf{A}_1^m}'$ and ${
     \begin{bmatrix}
         \frac{\partial\mathbf{u}_m}{\partial\xi_m} & \frac{\partial\mathbf{u}_m}{\partial\eta_m}
     \end{bmatrix}   
-    \cdot\mathbf{J}
+    \cdot\mathbf{J}.
 \end{equation}
+
+Now, let us consider the square integrability of the first term of equation~\eqref{eq:bending_strain}. The restriction of this term on the slave patch and the master patch are:
+\begin{equation}
+    \mathbf{u}_{,\alpha\beta}\cdot\mathbf{A}_3\vert_{\Omega_s}=\frac{\partial^2{}\mathbf{u}_s}{\partial{\mathbf{A}^s_\alpha}\partial{\mathbf{A}^s_\beta}}\cdot\mathbf{A}_3^s,
+\end{equation}
+and 
+\begin{equation}
+    \begin{split}
+    \mathbf{u}_{,\alpha\beta}\cdot\mathbf{A}_3\vert_{\Omega_m}&=\frac{\partial^2{}\mathbf{u}_m}{\partial{{\mathbf{A}^m_\alpha}'}\partial{{\mathbf{A}^m_\beta}'}}\cdot\mathbf{A}_3^m\\
+    &=\frac{\partial^2{}\mathbf{u}_m}{\partial{{\mathbf{A}^m_\alpha}'}\partial{{\mathbf{A}^m_\beta}'}}\cdot\mathbf{R}\mathbf{A}_3^s\\
+    &=\mathbf{R}^T\frac{\partial^2{}\mathbf{u}_m}{\partial{{\mathbf{A}^m_\alpha}'}\partial{{\mathbf{A}^m_\beta}'}}\cdot\mathbf{A}_3^s\\
+    &=\frac{\partial^2{}\mathbf{R}^T\mathbf{u}_m}{\partial{\mathbf{A}^s_\alpha}\partial{\mathbf{A}^s_\beta}}\cdot\mathbf{A}_3^s.
+    \end{split}
+\end{equation}
+Hence, the bending strains are square integrable if $\mathbf{u}_s$ and $\mathbf{R}^T\mathbf{u}_m$ is $C^1$ continuous across the intersection:
+\begin{gather}
+    \begin{cases}
+        \frac{\partial{\mathbf{u}_s}}{\partial{\mathbf{A}_1^s}}&=\mathbf{R}^T\frac{\partial{\mathbf{u}_m}}{\partial{\mathbf{A}_1^m}'}\\
+        \frac{\partial{\mathbf{u}_s}}{\partial{\mathbf{A}_2^s}}&=\mathbf{R}^T\frac{\partial{\mathbf{u}_m}}{\partial{\mathbf{A}_2^m}'}
+    \end{cases},\quad\text{or }
+    \begin{cases}
+        \frac{\partial{\mathbf{u}_s}}{\partial{\xi_s}}&=\mathbf{R}^T\frac{\partial{\mathbf{u}_m}}{\partial{\xi_s}}\\
+        \frac{\partial{\mathbf{u}_s}}{\partial{\eta_s}}&=\mathbf{R}^T\frac{\partial{\mathbf{u}_m}}{\partial{\eta_s}}
+    \end{cases}.\label{eq:kl-shell-constraints}
+\end{gather}
+
+\begin{remark}
+    Note that in the cases of smooth shell couplings, $\mathbf{R}$ is an identity tensor and ${\mathbf{A}_1^m}'={\mathbf{A}_1^s}$, ${\mathbf{A}_2^m}'={\mathbf{A}_2^s}$, the constraints~\eqref{eq:kl-shell-constraints} reduce to the $C^1$ continuity of $\mathbf{u}_s$ and $\mathbf{u}_m$.
+\end{remark}
+\begin{remark}
+    Under the constraints~\eqref{eq:kl-shell-constraints}, the angle of the kink is preserved in the current configuration, that is: if $\mathbf{A}_3^m=\mathbf{R}\mathbf{A}_3^s$, then we have $\mathbf{a}_3^m=\mathbf{R}\mathbf{a}_3^s$.\par
+
+    To show this, we first linearize the normal directors in the current configuration of the slave patch as:
+    \begin{equation}
+        \mathbf{a}_3^s=\mathbf{A}_3^s+\frac{\frac{\partial\mathbf{u}_s}{\partial{\xi_s}}\times\mathbf{A}_2^s+\mathbf{A}_1^s\times\frac{\partial\mathbf{u}_s}{\partial{\eta_s}}-\mathbf{A}_3^s\left(\left({\frac{\partial\mathbf{u}_s}{\partial{\xi_s}}\times\mathbf{A}_2^s+\mathbf{A}_1^s\times\frac{\partial\mathbf{u}_s}{\partial{\eta_s}}}\right)\cdot\mathbf{A}_3^s\right)}{\vert{\mathbf{A}_1^s\times\mathbf{A}_2^s}\vert},
+    \end{equation}
+    after applying the rotation tensor and using the fact that, for a rotation tensor $\mathbf{R}$, $\mathbf{R}(\mathbf{a}\times\mathbf{b})=\mathbf{R}\mathbf{a}\times\mathbf{R}\mathbf{b}$, we obtain:
+    \begin{equation}
+        \begin{split}
+            \mathbf{R}\mathbf{a}_3^s&=\mathbf{A}_3^m+\frac{\frac{\partial\mathbf{u}_m}{\partial{\xi_s}}\times\mathbf{A}_2^m+\mathbf{A}_1^m\times\frac{\partial\mathbf{u}_m}{\partial{\eta_s}}-\mathbf{A}_3^m\left(\left({\frac{\partial\mathbf{u}_m}{\partial{\xi_s}}\times\mathbf{A}_2^m+\mathbf{A}_1^m\times\frac{\partial\mathbf{u}_m}{\partial{\eta_s}}}\right)\cdot\mathbf{A}_3^m\right)}{\vert{\mathbf{A}_1^m\times\mathbf{A}_2^m}\vert}\\
+            &=\mathbf{a}_3^m.
+        \end{split}
+    \end{equation}
+\end{remark}
+
+Indeed, the preserving of rotation angle between kink provides physical evidence of the correctness of the constraints~\eqref{eq:kl-shell-constraints}.
+\subsection{}
 
 \begin{figure}[hbt]
     \centering
@@ -1260,6 +1311,7 @@ The derivatives of $\mathbf{u}_m$ w.r.t. the director ${\mathbf{A}_1^m}'$ and ${
     \end{subfigure}
 	\caption{A two patch non-conforming Kirchhoff-Love shell configuration illustrating the coupling with the appearance of kinks.}\label{fig:KL-shell-geometry}
 \end{figure}
+
 \clearpage
 \bibliography{Zotero.bib}
 \bibliographystyle{plain}
