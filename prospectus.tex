@@ -854,7 +854,7 @@ A graphical comparison of the sparity patterns among standard Lagrange multiplie
     \caption{Sparsity patterns of constrained stiffness matrices. Left: standard Lagrange multipliers with global factorization. Middle: \Bezier dual basis with global factorization. Right: \Bezier dual basis with localized factorization. Top: original matrix. Bottom: small absolute values ($\leq{}10^{-14}$) be pruned. All stiffness matrices are formulated for the three-patch coupling in Figure.~\ref{fig:three_planar_patches} with $3^{rd}$ order B-spline basis functions after 4 refiments. The number of non-zero entries is given by nz.}\label{fig:sparity_pattern}
 \end{figure}
 
-\section{Numerical results}
+\section{Numerical results for biharmonic problems}
 All our numerical results are obtained via an in-house C++ code.
 \subsection{A numerical study of the completeness of B\'ezier dual basis}
 We consider the completeness of B\'ezier dual basis on the one dimensional domain, $\Omega=(0,1)$. The domain $\Omega$ is uniformly partitioned into two elements, since the B\'ezier dual basis is equivalent to the global dual basis on one element domain. In the numerical test, we find the $L^2$ approximation of $n^{th}$ order Legendre polynomial in the B\'ezier dual space, as Legendre polynomials are orthogonal to each other.\par
@@ -1294,7 +1294,6 @@ Hence, the bending strains are square integrable if $\mathbf{u}_s$ and $\mathbf{
 \end{remark}
 
 Indeed, the preserving of rotation angle between kink provides physical evidence of the correctness of the constraints~\eqref{eq:kl-shell-constraints}.
-\subsection{}
 
 \begin{figure}[hbt]
     \centering
@@ -1310,6 +1309,58 @@ Indeed, the preserving of rotation angle between kink provides physical evidence
         \caption{The local coordinate system on the slave patch $\Omega_{s}$ is rotated and mapped to the master patch $\Omega_{m}$.}
     \end{subfigure}
 	\caption{A two patch non-conforming Kirchhoff-Love shell configuration illustrating the coupling with the appearance of kinks.}\label{fig:KL-shell-geometry}
+\end{figure}
+
+\subsection{Dual mortaring formulation for Kirchhoff-Love shell}
+
+Under the body force $\mathbf{q}$ and the traction $\mathbf{t}$, the weak form of the shell can be formulated by the equilibrium of virtual work as: find $\mathbf{u}\in\mathcal{K}^{kl}_b$, such that
+\begin{equation}
+    \int_{\Omega}\left(n^{\alpha\beta}(\mathbf{u})\delta\epsilon_{\alpha\beta}(\mathbf{v})+m^{\alpha\beta}(\mathbf{u})\delta\kappa_{\alpha\beta}(\mathbf{v})\right)d\Omega = \int_\Omega\mathbf{q}\cdot\mathbf{v}d\Omega+\int_\Gamma\mathbf{t}\cdot\mathbf{v}d\Gamma,\quad\forall\mathbf{v}\in\mathcal{K}^{kl}_b.
+\end{equation}
+The constrained function space $\mathcal{K}^{kl}_b$ is
+
+\begin{equation}
+    \mathcal{K}^{kl}_b:=\left\{\mathbf{u}\in{}\left[\mathcal{X}_b\right]^3: b^{kl}_0(\mathbf{u}, \boldsymbol{\mu}_0)=0 \text{ and }b^{kl}_1(\mathbf{u}, \boldsymbol{\mu}_1)=0\quad\forall(\boldsymbol{\mu}_0,\boldsymbol{\mu}_1)\in{\left[\mathcal{M}_0\right]^3\times{}\left[\mathcal{M}_1\right]^3}\right\},\label{eq:kl_reduced}
+\end{equation}
+where
+\begin{align}
+    b^{kl}_0(\mathbf{u}, \boldsymbol{\mu})&=\int_{\Gamma_{sm}}\boldsymbol{\mu}\cdot\left[\mathbf{u}\right]_{\Gamma}d\Gamma,\\
+    b^{kl}_1(\mathbf{u}, \boldsymbol{\mu})&=\int_{\Gamma_{sm}}\boldsymbol{\mu}\cdot\left(\frac{\partial{\mathbf{u}_s}}{\partial\xi_s}-\mathbf{R}^T\frac{\partial{\mathbf{u}_m}}{\partial\xi_s}\right)d\Gamma.
+\end{align}
+
+The discretizations of $\left[\mathcal{X}_b\right]^3$, $\left[\mathcal{M}_0\right]^3$ and $\left[\mathcal{M}_1\right]^3$ are identical to the biharmonic problem, and a similar approach can be applied to treat the cross point problem for the multi-patch Kirchhoff-Love shell coupling. \par
+
+\begin{remark}
+    This manuscript is not the first one that discussing the multi-patch coupling of Kirchhoff-Love shell problem in the IGA framework. Compared to published methods, the proposed procedure is advance in that:
+    \begin{itemize}
+        \item Whereas the bending strip method~\cite{kiendl2010bending} requires $C^0$ continuity and enforces constraints by penalty method, the proposed method can be applied to arbitrary discretizations and constraints are applied accurately.
+        \item Whereas the Coox's collocation method~\cite{coox2017flexible} solves the nullspace of a global constraint matrix resulting in a densed global stiffness matrix, the proposed constraints are dual basis friendly and the sparsity of the constrained linear system is preserved.
+        \item Whereas the Nitsche's method~(e.g. \cite{guo_nitsches_2015}) requires the constructions of additional terms, whose formulations vary with respect to the constitutive equations, the proposed method only depend on the geometry and is independent of the choice of material model. In addition, the stiff matrix size of the proposed method is smaller than that of the Nitsche's method of the same degrees of freedom.
+    \end{itemize} 
+\end{remark}
+
+\section{Numerical examples for Kirchhoff-Love shell problems}
+\subsection{Scordelis-Lo roof}
+
+We first consider the Scordelis-Lo roof benchmark problem. The Scordelis-Lo roof problem is a membrane stress dominated static shell problem and named after the authors who first reported it~\cite{scordelis1964computer}. In this problem, a cylindrical shell roof (Youngs modulus $E=432\text{MPa}$, Poisson's ratio $\nu = 0$, thickness $t = 0.25\text{m}$.) is supported by rigid diaphragms on both curved edges (i.e. $u_{x}=u_z=0$), while the straight edges are free to move, as depicted in Figure.~\ref{fig:scordelis-lo}. To improve the robustness, the displacement in $y$ direction of one DOF on the diaphragms supported edges is fixed. The vertical displacement at the midpoint of the straight edges is considered as the reference (with the given value $u_z=0.300592457\text{m}$). \par
+
+j
+
+\begin{figure}[hbt]
+    \centering
+    \captionsetup[subfigure]{font = footnotesize}
+    \begin{subfigure}[b]{.48\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{roof_config}
+        \caption{Structure and boundary conditions for the problem. The blue edges are free, while the red edges are fixed in $x$ and $z$ directions.}\label{fig:scordelis-lo}
+    \end{subfigure}
+    \begin{subfigure}[b]{.48\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{roof_decompose}
+        \vspace{.5cm}
+        \caption{Non-conforming four patch mesh with the intersections denoted by red lines.}\label{fig:scordelis-lo-decompose}
+    \end{subfigure}
+	\caption{The structure and mesh setup of the Scordelis-Lo roof problem.}
 \end{figure}
 
 \clearpage
