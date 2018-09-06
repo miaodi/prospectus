@@ -1343,10 +1343,7 @@ The discretizations of $\left[\mathcal{X}_b\right]^3$, $\left[\mathcal{M}_0\righ
 
 \subsection{Scordelis-Lo roof}
 
-We first consider the Scordelis-Lo roof benchmark problem. The Scordelis-Lo roof problem is a membrane stress dominated static shell problem and named after the authors who first reported it~\cite{scordelis1964computer}. In this problem, a cylindrical shell roof (Young's modulus $E=432\text{MPa}$, Poisson's ratio $\nu = 0$, thickness $t = 0.25\text{m}$.), under the gravity load ($f = 90\text{N}/\text{m}^2$), is supported by rigid diaphragms on both curved edges (i.e. $u_{x}=u_z=0$), while the straight edges are free to move, as depicted in Figure.~\ref{fig:scordelis-lo}. To improve the robustness, the displacement in $y$ direction of one DOF on the diaphragms supported edges is fixed. The vertical displacement at the midpoint of the straight edges is considered as the reference (with the given value $u_z=-0.300592457\text{m}$). \par
-
-The roof structure is decomposed into four patches, which are discretized non-conformly as shown in Fig.~\ref{fig:scordelis-lo-decompose}.
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
     \centering
     \captionsetup[subfigure]{font = footnotesize}
     \begin{subfigure}[b]{.48\textwidth}
@@ -1363,6 +1360,50 @@ The roof structure is decomposed into four patches, which are discretized non-co
 	\caption{The structure and mesh setup of the Scordelis-Lo roof problem.}
 \end{figure}
 
+We first consider the Scordelis-Lo roof benchmark problem. The Scordelis-Lo roof problem is a membrane stress dominated static shell problem and named after the authors who first reported it~\cite{scordelis1964computer}. In this problem, a cylindrical shell roof (Young's modulus $E=432\text{MPa}$, Poisson's ratio $\nu = 0$, thickness $t = 0.25\text{m}$.), under the distributed gravity load ($f = 90\text{N}/\text{m}^2$), is supported by rigid diaphragms on both curved edges (i.e. $u_{x}=u_z=0$), while the straight edges are free to move, as depicted in Figure.~\ref{fig:scordelis-lo}. To improve the robustness, the displacement in $y$ direction of one DOF on the diaphragms supported edges is fixed. The vertical displacement at the midpoint of the straight edges is considered as the reference (with the given value $u_z=-0.300592457\text{m}$).\par
+
+The roof structure is decomposed into four patches, which are discretized non-conformly as shown in Fig.~\ref{fig:scordelis-lo-decompose}. Fig.~\ref{fig:scordelis_converge} shows the convergent behaviors of the global dual and the \Bezier dual for different polynomial degrees. Converged results are obtained for all polynomial orders. For quartic basis functions, the relative error is reduced to $0.1\%$ with only one refinement for both methods. The convergence performance of the \Bezier dual is better than that of the global dual for quadratic and cubic cases. Although the \Bezier dual yeilds slightly higher error for the quartic case, it still converges asymptotically. \par
+
+\begin{figure}[!hbt]
+    \centering
+    \captionsetup[subfigure]{font = footnotesize}
+    \begin{subfigure}[b]{.32\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{Scordelis-Lo-p=2}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{.32\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{Scordelis-Lo-p=3}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{.32\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{Scordelis-Lo-p=4}
+        \caption{}
+    \end{subfigure}
+	\caption{Scordelis-Lo roof: comparison of the vertical displacement at the midpoint of the free edge for different methods and degrees.}\label{fig:scordelis_converge}
+\end{figure}
+
+Fig.~\ref{fig:scordelis_deform} demonstrates the effect of the proposed constraint. As can be seen, with only $C^0$ continuity constraint enforced, althought the deformed surface remains continuous, the intersections fail to pass the bending moments from one patch to another. Hence, kinks are formed along all intersections. By enforcing the additional constraint, the smoothness of the roof structure is preserved, even though the mesh is non-conformly discretized. 
+
+\begin{figure}[!hbt]
+    \centering
+    \captionsetup[subfigure]{font = footnotesize}
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{roof_c0_result}
+        \caption{}
+    \end{subfigure}
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{roof_c1_result}
+        \caption{}
+    \end{subfigure}
+	\caption{Deformed Scordelis-Lo roof (scaling factor of 20 is applied to the displacement): (a) Only the $C^0$ continuity constraint is applied. Kinks are obvious for all intersections. (b) The $C^1$ continuity constraint is also applied. The deformed surface is as smooth as a single patch.}\label{fig:scordelis_deform}
+\end{figure}
+
+\subsection{L-shaped cantilever beam}
 \clearpage
 \bibliography{Zotero.bib}
 \bibliographystyle{plain}
