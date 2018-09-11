@@ -1406,7 +1406,7 @@ Fig.~\ref{fig:scordelis_deform} demonstrates the effect of the proposed constrai
 \subsection{L-shaped cantilever beam}
 In this section, we consider shell patches meet at angles other than $0^{\circ}$ to see how the proposed method handles shell geometries with kinks. \par
 
-We first take a two patch L-shaped beam, where patches are joined at $90^{\circ}$. The geometry information and boundary conditions are demonstrated in Fig.~\ref{fig:L-beam}. The two patches have the same thickness of $t = 0.02$. The material properties for both patches are: Young’s modulus $E=$, Poisson;s ratio $\nu = $. A point load of $F=1$ is applied at the top left corner of the top flange. The L-shaped cantilever beam is discretized non-comformly, as depicted in Fig.~\ref{fig:L-beam-decompose}.\par
+We first take a two patch L-shaped beam, where patches are joined at $90^{\circ}$. The geometry information and boundary conditions are demonstrated in Fig.~\ref{fig:L-beam}. The two patches have the same thickness of $t = 0.05$. The material properties for both patches are: Young’s modulus $E = 3\times10^6$, Poisson;s ratio $\nu = 0.3$. A point load of $F=1$ is applied at the top left corner of the top flange. The L-shaped cantilever beam is discretized non-comformly, as depicted in Fig.~\ref{fig:L-beam-decompose}.\par
 
 We consider the vertical displacement of the tip under loading, and compare the obtained results with a converged shell element result from Abaqus, see Fig.~\ref{fig:L-beam-converge}. The converged solution for both dual basis functions is $u_z = -0.2142$ , which is slightly higher than the reference value $u_z = -0.2162$ obtained from Abaqus. Fig.~\ref{fig:L-beam-deform-c0} shows the deformed beam with only $C^0$ continuity constraint. For this case, the hinge serves like a hinge between patches and no bending moment is transferred. The proposed constraint is applied in Fig.~\ref{fig:L-beam-deform-c1}, where the $90^{\circ}$ angle is preserved during the deformation, which is consistent with Remark.~\ref{rm:angle-preservation}. \par
 
@@ -1461,7 +1461,7 @@ We next quantitatively study the performance of the proposed constraint in prese
         \includegraphics[width = \textwidth]{L-beam-c1_result}
         \caption{}\label{fig:L-beam-deform-c1}
     \end{subfigure}
-	\caption{Deformed L-shaped cantilever beam (scaling factor of 2 is applied to the displacement): (a) Only the $C^0$ continuity constraint is applied. The kink serves like a hinge. (b) The proposed continuity constraint is also applied. The $90^\circ$ angle between two patches is preseved.}\label{fig:L-beam-deform}
+	\caption{Deformed L-shaped cantilever beam (scaling factor of 10 is applied to the displacement): (a) Only the $C^0$ continuity constraint is applied. The kink serves like a hinge. (b) The proposed continuity constraint is also applied. The $90^\circ$ angle between two patches is preseved.}\label{fig:L-beam-deform}
 \end{figure}
 
 \clearpage
