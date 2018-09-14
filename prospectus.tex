@@ -1406,25 +1406,26 @@ Fig.~\ref{fig:scordelis_deform} demonstrates the effect of the proposed constrai
 \subsection{L-shaped cantilever beam}
 In this section, we consider shell patches meet at angles other than $0^{\circ}$ to see how the proposed method handles shell geometries with kinks. \par
 
-We first take a two patch L-shaped beam, where patches are joined at $90^{\circ}$. The geometry information and boundary conditions are demonstrated in Fig.~\ref{fig:L-beam}. The two patches have the same thickness of $t = 0.05$. The material properties for both patches are: Young’s modulus $E = 3\times10^6$, Poisson;s ratio $\nu = 0.3$. A point load of $F=1$ is applied at the top left corner of the top flange. The L-shaped cantilever beam is discretized non-comformly, as depicted in Fig.~\ref{fig:L-beam-decompose}.\par
+We first take a two patch L-shaped beam, where patches are joined at $90^{\circ}$. The geometry information and boundary conditions are demonstrated in Fig.~\ref{fig:L-beam}. The two patches have the same thickness of $t = 0.2$. The material properties for both patches are: Young’s modulus $E = 3\times10^6$, Poisson's ratio $\nu = 0.3$. A point load of $F=10$ is applied at the top left corner of the top flange. The L-shaped cantilever beam is discretized non-comformly, as depicted in Fig.~\ref{fig:L-beam-decompose}.\par
 
-We consider the vertical displacement of the tip under loading, and compare the obtained results with a converged shell element result from Abaqus, see Fig.~\ref{fig:L-beam-converge}. The converged solution for both dual basis functions is $u_z = -0.2142$ , which is slightly higher than the reference value $u_z = -0.2162$ obtained from Abaqus. Fig.~\ref{fig:L-beam-deform-c0} shows the deformed beam with only $C^0$ continuity constraint. For this case, the hinge serves like a hinge between patches and no bending moment is transferred. The proposed constraint is applied in Fig.~\ref{fig:L-beam-deform-c1}, where the $90^{\circ}$ angle is preserved during the deformation, which is consistent with Remark.~\ref{rm:angle-preservation}. \par
+We consider the vertical displacement of the tip under loading, and compare the obtained results with a converged shell element result from Abaqus, see Fig.~\ref{fig:L-beam-converge}. The converged solution for both dual basis functions is $u_z = -0.03835$ , which is slightly higher than the reference value $u_z = -0.03913$ obtained from Abaqus. Fig.~\ref{fig:L-beam-deform-c0} shows the deformed beam with only $C^0$ continuity constraint. For this case, the hinge serves like a hinge between patches and no bending moment is transferred. The proposed constraint is applied in Fig.~\ref{fig:L-beam-deform-c1}, where the $90^{\circ}$ angle is preserved during the deformation, which is consistent with Remark.~\ref{rm:angle-preservation}. \par
 
-We next quantitatively study the performance of the proposed constraint in preserving angle between coupled patches. 
+We next quantitatively study the performance of the proposed constraint in preserving angle between coupled patches. Beside the L-shaped beam with a constant angle of $90^\circ$ between two patches, a generalized L-shaped beam with variant angles is also considered, cf. Fig.~\ref{fig:L-beam-2}. The loading, boundary conditions and material properties remain the same as the previous example. Both patches are discretized by bicubic elements and two \textit{h}-refinements are conducted in each directions. The relative errors of the coupling angle along the interface for both cases are shown in Fig.~\ref{fig:L-beam-angle}. For the case of the constant coupling angle, the maximum relative errors along the intersection are only $7\times10^{-7}$ for both global dual and \Bezier dual basis functions. A similar test has been conducted for a T-beam coupled by a Nitsche type method~\cite{guo_nitsches_2015}, where a larger maximum relative error of $2\times10^{-6}$ is obtained for a deformation magnititude that is ten times smaller than that of this benchmark. For the case of variant coupling angles, the relative errors are still acceptable, though they are slightly larger than the previous case. For both cases, the maximum relatives errors are obtained at the furthest position from the fixed boundary, where the highest deformation happens. This is consistent with the fact that the angle preservation property of the proposed constraint is verified under the small deformation assumption.
+
 \begin{figure}[!hbt]
     \centering
     \captionsetup[subfigure]{font = footnotesize}
     \begin{subfigure}[b]{.48\textwidth}
         \centering
         \includegraphics[width = \textwidth]{L-beam-config}
-        \caption{Structure and boundary conditions for the problem. The red edges are fixed from moving and rotating.}\label{fig:L-beam}
+        \caption{Geometry and boundary conditions for the problem. The red edges are fixed from moving and rotating.}\label{fig:L-beam}
     \end{subfigure}
     \begin{subfigure}[b]{.48\textwidth}
         \centering
         \includegraphics[width = \textwidth]{L-beam-decompose}
-        \caption{Non-conforming two patch mesh with the intersections denoted by red line.}\label{fig:L-beam-decompose}
+        \caption{Non-conforming two patch mesh with the intersections denoted by the red line.}\label{fig:L-beam-decompose}
     \end{subfigure}
-	\caption{The structure and mesh setup of the L-shaped cantilever beam problem.}
+	\caption{The geometry and mesh setup of the L-shaped cantilever beam problem.}
 \end{figure}
 
 \begin{figure}[!hbt]
@@ -1464,6 +1465,37 @@ We next quantitatively study the performance of the proposed constraint in prese
 	\caption{Deformed L-shaped cantilever beam (scaling factor of 10 is applied to the displacement): (a) Only the $C^0$ continuity constraint is applied. The kink serves like a hinge. (b) The proposed continuity constraint is also applied. The $90^\circ$ angle between two patches is preseved.}\label{fig:L-beam-deform}
 \end{figure}
 
+\begin{figure}[!hbt]
+    \centering
+    \captionsetup[subfigure]{font = footnotesize}
+    \begin{subfigure}[b]{.48\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{L-beam-2-config}
+        \caption{Geometry and boundary conditions for the problem. The red edges are fixed from moving and rotating.}\label{fig:L-beam-config-2}
+    \end{subfigure}
+    \begin{subfigure}[b]{.48\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{L-beam-decompose2}
+        \caption{Non-conforming two patch mesh with the intersections denoted by the red line.}\label{fig:L-beam-decompose-2}
+    \end{subfigure}
+	\caption{The geometry and mesh setup of the L-shaped cantilever beam with variant angles.}\label{fig:L-beam-2}
+\end{figure}
+
+\begin{figure}[!hbt]
+    \centering
+    \captionsetup[subfigure]{font = footnotesize}
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{L-beam-angle-error}
+        \caption{}\label{fig:L-beam-angle-error}
+    \end{subfigure}
+    \begin{subfigure}[b]{.49\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{L-beam-angle-error1}
+        \caption{}\label{fig:L-beam-angle-error1}
+    \end{subfigure}
+	\caption{Relative errors of the deformed coupling angle for : (a) The L-shaped beam with a constant coupling angle of $90^\circ$. (b) The L-shaped beam with variant coupling angles.}\label{fig:L-beam-angle}
+\end{figure}
 \clearpage
 \bibliography{Zotero.bib}
 \bibliographystyle{plain}
